@@ -1,0 +1,14 @@
+machine:
+  node:
+      version: 4.1.0
+
+dependencies:
+  cache_directories:
+    - "~/node_cache"
+    - "~/bower_cache"
+  pre:
+    - bash circle_ci/check_if_cache_is_allowed.sh $CIRCLE_BRANCH
+    - if [[ -e ~/docker_cache/webbase.tar ]]; then docker load -i ~/docker_cache/webbase.tar; fi
+    - bash circle_ci/load_build_cache.sh
+  post:
+    - bash circle_ci/update_build_cache.sh
