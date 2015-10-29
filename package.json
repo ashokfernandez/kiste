@@ -1,0 +1,30 @@
+{
+  "name": "kiste",
+  "version": "0.0.1",
+  "description": "A cross platform desktop player for Google Play Music",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashokfernandez/kiste.git"
+  },
+  "keywords": [
+    "Google",
+    "Play",
+    "Music",
+    "Desktop"
+  ],
+  "author": "Ashok Fernandez <ashok.fernandez@gmail.com> (https://ashokfernandez.wordpress.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashokfernandez/kiste/issues"
+  },
+  "homepage": "https://github.com/ashokfernandez/kiste#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "electron-prebuilt": "^0.34.1"
+  }
+}
