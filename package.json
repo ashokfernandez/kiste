@@ -4,7 +4,7 @@
   "description": "A cross platform desktop player for Google Play Music",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha ./specs/ --recursive",
     "start": "./node_modules/.bin/electron ."
   },
   "repository": {
@@ -25,6 +25,8 @@
   "homepage": "https://github.com/ashokfernandez/kiste#readme",
   "dependencies": {},
   "devDependencies": {
-    "electron-prebuilt": "^0.34.1"
+    "chai": "^3.4.0",
+    "electron-prebuilt": "^0.34.1",
+    "mocha": "^2.3.3"
   }
 }
