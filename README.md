@@ -1,6 +1,9 @@
 # kiste
 A cross platform desktop player for Google Play Music
 
+
+![](https://circleci.com/gh/ashokfernandez/kiste.png?style=shield&circle-token=4de6227bbf2e7d04ea5975cc3054f71ea3089cfa)
+
 # About
 The goal of this project is to create a free, stable, multi platform desktop player for Google Play Music. The motivation for this is that the current alternatives to the Chrome app for Google Play Music are all either single platform, paid, buggy or a combination of all three.
 
