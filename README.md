@@ -10,5 +10,8 @@ The goal of this project is to create a free, stable, multi platform desktop pla
 # Progress
 See the issues page for more details on features 
 
+# Building the app
+You need the pre requisites listed [here](https://github.com/loopline-systems/electron-builder#pre-requisites)
+
 # Disclaimer
 This project has nothing to do with Google and is an unoffcial fun side project for me. No gurantees and no intented copyright infringement.
