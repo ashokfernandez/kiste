@@ -1,8 +1,8 @@
 {
   "osx" : {
     "title": "kiste",
-    "background": "assets/osx/installer.png",
-    "icon": "assets/osx/mount.icns",
+    "background": "assets/osx/background.png",
+    "icon": "assets/osx/dmg-icon.icns",
     "icon-size": 80,
     "contents": [
       { "x": 438, "y": 344, "type": "link", "path": "/Applications" },
