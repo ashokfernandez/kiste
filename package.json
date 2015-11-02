@@ -6,18 +6,15 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha ./specs/ --recursive",
     "start": "./node_modules/.bin/electron .",
-    
-   "clean": "rm -rf ./dist",
+    "clean": "rm -rf ./dist",
     "clean:osx": "rm -rf ./dist/osx && rm -rf ./build/osx",
     "clean:win": "rm -rf ./dist/win && rm -rf ./build/win",
- 
     "build": "npm run clean && npm run build:osx && npm run build:win",
-    "build:osx": "npm run clean:osx && electron-packager ./src \"kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=0.25.3 --icon=assets/osx/icon.icns",
-    "build:win": "npm run clean:win && electron-packager ./src \"kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=0.25.3 --icon=assets/win/icon.ico",
- 
+    "build:osx": "npm run clean:osx && electron-packager ./src \"kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=0.34.2 --icon=assets/osx/icon.icns",
+    "build:win": "npm run clean:win && electron-packager ./src \"kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=0.34.2 --icon=assets/win/icon.ico",
     "pack": "npm run pack:osx && npm run pack:win",
     "pack:osx": "npm run build:osx && electron-builder \"build/osx/kiste-darwin-x64/kiste.app\" --platform=osx --out=\"dist/osx\" --config=packager.json",
-    "pack:win": "npm run build:win && electron-builder \"build/win/kiste-win32\" --platform=win --out=\"dist/win\" --config=packager.json"
+    "pack:win": "npm run build:win && electron-builder \"build/win/kiste-win32-ia32\" --platform=win --out=\"dist/win\" --config=packager.json"
   },
   "repository": {
     "type": "git",
@@ -35,7 +32,10 @@
     "url": "https://github.com/ashokfernandez/kiste/issues"
   },
   "homepage": "https://github.com/ashokfernandez/kiste#readme",
-  "dependencies": {},
+  "dependencies": {
+    "bluebird": "^3.0.5",
+    "which": "^1.2.0"
+  },
   "devDependencies": {
     "chai": "^3.4.0",
     "electron-builder": "^2.0.2",
