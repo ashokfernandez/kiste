@@ -1,4 +1,4 @@
-const _ = require('lodash')
+var _ = require('lodash')
 
 function handleShortcut (shortCutEvent, app, browserWindow) {
   var eventHandlers = eventHandlerMap[shortCutEvent.event]
@@ -14,9 +14,10 @@ function handleShortcut (shortCutEvent, app, browserWindow) {
   }
 }
 
-const eventHandlerMap = {
+var eventHandlerMap = {
   'browser-back': [browserBack],
-  'browser-forward': [browserForward]
+  'browser-forward': [browserForward],
+  'command-w': [hideMainWindow]
 }
 
 // -------------------------------------------------------------------------------------------
@@ -32,6 +33,12 @@ function browserBack (app, browserWindow) {
 function browserForward (app, browserWindow) {
   if (browserWindow.webContents.canGoForward()) {
     browserWindow.webContents.goForward()
+  }
+}
+
+function hideMainWindow (app, browserWindow) {
+  if (browserWindow.isVisible()) {
+    browserWindow.hide()
   }
 }
 

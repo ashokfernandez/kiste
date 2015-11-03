@@ -10,8 +10,8 @@
     "clean:osx": "rm -rf ./dist/osx && rm -rf ./build/osx",
     "clean:win": "rm -rf ./dist/win && rm -rf ./build/win",
     "build": "npm run clean && npm run build:osx && npm run build:win",
-    "build:osx": "npm test && npm run clean:osx && electron-packager . \"kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=0.34.2 --icon=assets/osx/icon.icns --ignore=\"dist|build|specs|assets\"",
-    "build:win": "npm test && npm run clean:win && electron-packager . \"kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=0.34.2 --icon=assets/win/icon.ico --ignore=\"dist|build|specs|assets\"",
+    "build:osx": "npm test && npm run clean:osx && electron-packager . \"kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=0.34.2 --icon=assets/osx/icon.icns --ignore=\"dist|build|specs|assets|circle\"",
+    "build:win": "npm test && npm run clean:win && electron-packager . \"kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=0.34.2 --icon=assets/win/icon.ico --ignore=\"dist|build|specs|assets|circle\"",
     "pack": "npm run pack:osx && npm run pack:win",
     "pack:osx": "npm run build:osx && electron-builder \"build/osx/kiste-darwin-x64/kiste.app\" --platform=osx --out=\"dist/osx\" --config=packager.json",
     "pack:win": "npm run build:win && electron-builder \"build/win/kiste-win32-ia32\" --platform=win --out=\"dist/win\" --config=packager.json"

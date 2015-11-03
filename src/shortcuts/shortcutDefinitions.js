@@ -6,5 +6,9 @@ module.exports = {
   'Command+]': {
     event: 'browser-forward',
     cmdOrCtrl: true
+  },
+  'Command+w': {
+    event: 'command-w',
+    cmdOrCtrl: true
   }
 }

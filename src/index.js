@@ -1,7 +1,8 @@
-const GOOGLE_MUSIC_URL = 'https://music.google.com/'
+var GOOGLE_MUSIC_URL = 'https://music.google.com/'
 var app = require('app')  // Module to control application life.
 var BrowserWindow = require('browser-window')  // Module to create native browser window.
-var connectKeyboardShortcuts = require('./shortcuts')
+
+var connectKeyboardShortcuts = require('./shortcuts/')
 
 // Report crashes to our server.
 // require('crash-reporter').start()
@@ -11,13 +12,13 @@ var connectKeyboardShortcuts = require('./shortcuts')
 var mainWindow = null
 
 // Quit when all windows are closed.
-// app.on('window-all-closed', function () {
+app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  // if (process.platform !== 'darwin') {
-    // app.quit()
-  // }
-// })
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -39,17 +40,15 @@ app.on('ready', function () {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
-  // Emitted when the window is closed.
+  // Emitted when the x is pressed on the main window
   mainWindow.on('close', function (event) {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     event.preventDefault()
     mainWindow.hide()
     event.returnValue = true
   })
 
   app.on('activate', function () {
+    console.log('activate')
     mainWindow.show()
   })
 
@@ -78,8 +77,4 @@ app.on('before-quit', function (event) {
 
 app.on('quit', function () {
   // console.log('quit')
-})
-
-app.on('shortcut-press', function (e) {
-  console.log(e.shortcut, e.event, 'key-event has been fired')
 })

@@ -1,4 +1,4 @@
-const shortcutDefinitions = require('electron-shortcut-loader')('./src/shortcuts/shortcutDefinitions')
+var shortcutDefinitions = require('electron-shortcut-loader')('./shortcutDefinitions')
 var handleShortcut = require('./shortcutHandlers')
 
 function register (app, browserWindow) {
