@@ -1,10 +1,10 @@
+const GOOGLE_MUSIC_URL = 'https://music.google.com/'
 var app = require('app')  // Module to control application life.
 var BrowserWindow = require('browser-window')  // Module to create native browser window.
+var connectKeyboardShortcuts = require('./shortcuts')
 
 // Report crashes to our server.
-require('crash-reporter').start()
-
-const shortcuts = require('electron-shortcut-loader')('./src/shortcuts')
+// require('crash-reporter').start()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -22,9 +22,6 @@ var mainWindow = null
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function () {
-  // Register the keyboard shortcuts
-  shortcuts.register()
-
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1100,
@@ -37,7 +34,7 @@ app.on('ready', function () {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadUrl('https://music.google.com/')
+  mainWindow.loadUrl(GOOGLE_MUSIC_URL)
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -55,11 +52,13 @@ app.on('ready', function () {
   app.on('activate', function () {
     mainWindow.show()
   })
+
+  // Register the keyboard shortcuts
+  connectKeyboardShortcuts(app, mainWindow)
 })
 
 app.on('will-quit', function () {
   // console.log('will quit')
-  shortcuts.unregister()
   // if (mainWindow) {
     // mainWindow = null
     // app.quit()
