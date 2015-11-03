@@ -1,8 +1,11 @@
+var GOOGLE_MUSIC_URL = 'https://music.google.com/'
 var app = require('app')  // Module to control application life.
 var BrowserWindow = require('browser-window')  // Module to create native browser window.
 
+var connectKeyboardShortcuts = require('./shortcuts/')
+
 // Report crashes to our server.
-require('crash-reporter').start()
+// require('crash-reporter').start()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -12,9 +15,9 @@ var mainWindow = null
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  // if (process.platform !== 'darwin') {
-    // app.quit()
-  // }
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
 
 // This method will be called when Electron has finished
@@ -32,25 +35,25 @@ app.on('ready', function () {
   })
 
   // and load the index.html of the app.
-  // mainWindow.loadUrl('file://' + __dirname + '/index.html')
-  mainWindow.loadUrl('https://music.google.com/')
+  mainWindow.loadUrl(GOOGLE_MUSIC_URL)
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
-  // Emitted when the window is closed.
+  // Emitted when the x is pressed on the main window
   mainWindow.on('close', function (event) {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     event.preventDefault()
     mainWindow.hide()
     event.returnValue = true
   })
 
   app.on('activate', function () {
+    console.log('activate')
     mainWindow.show()
   })
+
+  // Register the keyboard shortcuts
+  connectKeyboardShortcuts(app, mainWindow)
 })
 
 app.on('will-quit', function () {
