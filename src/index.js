@@ -4,22 +4,27 @@ var BrowserWindow = require('browser-window')  // Module to create native browse
 // Report crashes to our server.
 require('crash-reporter').start()
 
+const shortcuts = require('electron-shortcut-loader')('./src/shortcuts')
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow = null
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+// app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   // if (process.platform !== 'darwin') {
     // app.quit()
   // }
-})
+// })
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function () {
+  // Register the keyboard shortcuts
+  shortcuts.register()
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1100,
@@ -32,7 +37,6 @@ app.on('ready', function () {
   })
 
   // and load the index.html of the app.
-  // mainWindow.loadUrl('file://' + __dirname + '/index.html')
   mainWindow.loadUrl('https://music.google.com/')
 
   // Open the DevTools.
@@ -55,6 +59,7 @@ app.on('ready', function () {
 
 app.on('will-quit', function () {
   // console.log('will quit')
+  shortcuts.unregister()
   // if (mainWindow) {
     // mainWindow = null
     // app.quit()
@@ -74,4 +79,8 @@ app.on('before-quit', function (event) {
 
 app.on('quit', function () {
   // console.log('quit')
+})
+
+app.on('shortcut-press', function (e) {
+  console.log(e.shortcut, e.event, 'key-event has been fired')
 })
