@@ -1,12 +1,12 @@
 var Menu = require('menu')
 
-function createMainMenu (mainWindow) {
+function createMainMenu (app, mainWindow) {
   // Create the Application's main menu
   var template = [{
     label: 'Electron',
     submenu: [
       {
-        label: 'About Electron',
+        label: 'About Kiste',
         selector: 'orderFrontStandardAboutPanel:'
       },
       {
