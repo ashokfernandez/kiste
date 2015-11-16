@@ -1,7 +1,8 @@
 var GOOGLE_MUSIC_URL = 'https://music.google.com/'
 var app = require('app')  // Module to control application life.
-var createMainWindow = require('./createMainWindow')
 
+var createMainWindow = require('./createMainWindow')
+var createMainMenu = require('./menu')
 var connectKeyboardShortcuts = require('./shortcuts/')
 
 // Report crashes to our server.
@@ -32,6 +33,7 @@ app.on('ready', function () {
 
   // Register the keyboard shortcuts
   connectKeyboardShortcuts(app, mainWindow)
+  createMainMenu(app, mainWindow)
 })
 
 // app.on('will-quit', function () {
