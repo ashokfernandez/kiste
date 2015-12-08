@@ -3,8 +3,8 @@ var BrowserWindow = require('browser-window')
 
 function createMainWindow () {
   var mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 800,
+    width: 1400,
+    height: 950,
     'title-bar-style': 'hidden-inset',
     'web-preferences': {
       webgl: true,
