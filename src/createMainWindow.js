@@ -1,7 +1,10 @@
 var app = require('app')
 var BrowserWindow = require('browser-window')
+var clientJs = require('./clientJs')
 
-function createMainWindow () {
+var WINDOW_INSTANCE
+
+function createMainWindow (showDevTools) {
   var mainWindow = new BrowserWindow({
     width: 1400,
     height: 950,
@@ -38,7 +41,26 @@ function createMainWindow () {
     }
   })
 
+  // Inject in our js API for the controls
+  mainWindow.webContents.on('dom-ready', () => {
+    clientJs('appInterface')
+      .then((appInterface) => {
+        mainWindow.webContents.executeJavaScript(appInterface)
+      })
+  })
+
+  if (showDevTools) {
+    mainWindow.webContents.openDevTools()
+  }
+
   return mainWindow
 }
 
-module.exports = createMainWindow
+function mainWindowFactory (showDevTools) {
+  if (!WINDOW_INSTANCE) {
+    WINDOW_INSTANCE = createMainWindow(showDevTools)
+  }
+
+  return WINDOW_INSTANCE
+}
+module.exports = mainWindowFactory
