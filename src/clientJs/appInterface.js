@@ -6,129 +6,132 @@
  * Controls the functions of the Google Music player
  */
 
-if (window.GoogleMusicAPI === undefined) {
-  class GoogleMusicAPI {
-    constructor () {
-      this.selectors = {}
-      this.CONSTANTS = {}
+var remote = require('remote')
+var _ = remote.require('lodash')
 
-      // ------------------------------------------------------------ VOLUME CONTROL
-      this.selectors.volumeSlider = document.querySelector('#material-vslider')
-      this.selectors.volumeSlider.step = 1
+const STOPPED = 0
+const PAUSED = 1
+const PLAYING = 2
 
-      // ------------------------------------------------------------ PLAYBACK CONTROLS
-      this.selectors.playPause = document.querySelector('#player [data-id="play-pause"]')
-      this.selectors.forward = document.querySelector('#player [data-id="forward"]')
-      this.selectors.rewind = document.querySelector('#player [data-id="rewind"]')
-      this.selectors.shuffle = document.querySelector('#player [data-id="shuffle"]')
-      this.selectors.repeat = document.querySelector('#player [data-id="repeat"]')
-      this.selectors.playback = document.querySelector('#player #material-player-progress')
+// Repeat modes.
+const LIST_REPEAT = 'LIST_REPEAT'
+const SINGLE_REPEAT = 'SINGLE_REPEAT'
+const NO_REPEAT = 'NO_REPEAT'
 
-      // Playback states
-      this.CONSTANTS.STOPPED = 0
-      this.CONSTANTS.PAUSED = 1
-      this.CONSTANTS.PLAYING = 2
+// Shuffle modes.
+const ALL_SHUFFLE = 'ALL_SHUFFLE'
+const NO_SHUFFLE = 'NO_SHUFFLE'
 
-      // Repeat modes.
-      this.CONSTANTS.LIST_REPEAT = 'LIST_REPEAT'
-      this.CONSTANTS.SINGLE_REPEAT = 'SINGLE_REPEAT'
-      this.CONSTANTS.NO_REPEAT = 'NO_REPEAT'
-
-      // Shuffle modes.
-      this.CONSTANTS.ALL_SHUFFLE = 'ALL_SHUFFLE'
-      this.CONSTANTS.NO_SHUFFLE = 'NO_SHUFFLE'
+class GoogleMusicAPI {
+  constructor () {
+    this.element = {
+      volumeSlider: this._selector('#material-vslider'),
+      playPause: this._selector('#player [data-id="play-pause"]'),
+      forward: this._selector('#player [data-id="forward"]'),
+      rewind: this._selector('#player [data-id="rewind"]'),
+      shuffle: this._selector('#player [data-id="shuffle"]'),
+      repeat: this._selector('#player [data-id="repeat"]'),
+      playback: this._selector('#player #material-player-progress')
     }
 
-    // ------------------------------------------------------------ VOLUME CONTROL
+    // Change volume step from 5 to 1 so we can easily change the value
+    this.element.volumeSlider.step = 1
+  }
 
-    getVolume () {
-      return parseInt(this.selectors.volumeSlider.value, 10)
+  _selector (selectorTargetString) {
+    return document.querySelector(selectorTargetString)
+  }
+
+  // ------------------------------------------------------------ VOLUME CONTROL
+
+  getVolume () {
+    return parseInt(this.element.volumeSlider.value, 10)
+  }
+
+  // Sets the volume to a level between 0 - 100
+  setVolume (newVolume) {
+    var currentVolume = this.getVolume()
+
+    if (newVolume > currentVolume) {
+      this._increaseVolume(newVolume - currentVolume)
+    } else if (newVolume < currentVolume) {
+      this._decreaseVolume(currentVolume - newVolume)
     }
+  }
 
-    // Sets the volume to a level between 0 - 100
-    setVolume (newVolume) {
-      var currentVolume = this.getVolume()
+  _increaseVolume (amount) {
+    amount = amount || 1
 
-      if (newVolume > currentVolume) {
-        this._increaseVolume(newVolume - currentVolume)
-      } else if (newVolume < currentVolume) {
-        this._decreaseVolume(currentVolume - newVolume)
-      }
+    for (var i = 0; i < amount; i++) {
+      this.element.volumeSlider.increment()
     }
+  }
 
-    _increaseVolume (amount) {
-      amount = amount || 1
+  _decreaseVolume (amount) {
+    amount = amount || 1
 
-      for (var i = 0; i < amount; i++) {
-        this.selectors.volumeSlider.increment()
-      }
+    for (var i = 0; i < amount; i++) {
+      this.element.volumeSlider.decrement()
     }
+  }
 
-    _decreaseVolume (amount) {
-      amount = amount || 1
+  // ------------------------------------------------------------ VOLUME CONTROL
+  getPlaybackTime () {
+    return parseInt(this.element.playback.value, 10)
+  }
 
-      for (var i = 0; i < amount; i++) {
-        this.selectors.volumeSlider.decrement()
-      }
-    }
+  setPlaybackTime (milliseconds) {
+    this.element.playback.value = milliseconds
+    this.element.playback.fire('change')
+  }
 
-    // ------------------------------------------------------------ VOLUME CONTROL
-    getPlaybackTime () {
-      return parseInt(this.selectors.playback.value, 10)
-    }
+  // Playback functions.
+  playPause () {
+    this.element.playPause.click()
+  }
 
-    setPlaybackTime (milliseconds) {
-      this.selectors.playback.value = milliseconds
-      this.selectors.playback.fire('change')
-    }
+  forward () {
+    this.element.forward.click()
+  }
 
-    // Playback functions.
-    playPause () {
-      this.selectors.playPause.click()
-    }
+  rewind () {
+    this.element.rewind.click()
+  }
 
-    forward () {
-      this.selectors.forward.click()
-    }
+  getShuffle () {
+    return this.element.shuffle.getAttribute('value')
+  }
 
-    rewind () {
-      this.selectors.rewind.click()
-    }
+  toggleShuffle () {
+    this.element.shuffle.click()
+  }
 
-    getShuffle () {
-      return this.selectors.shuffle.getAttribute('value')
-    }
+  getRepeat () {
+    return this.element.repeat.value
+  }
 
-    toggleShuffle () {
-      this.selectors.shuffle.click()
-    }
-
-    getRepeat () {
-      return this.selectors.repeat.value
-    }
-
-    changeRepeat (mode) {
-      // if (!mode) {
-        // Toggle between repeat modes once.
-        // this.repeat.click()
-      // } else {
-        // Toggle between repeat modes until the desired mode is activated.
-        // while (getRepeat() !== mode) {
-        //     this.repeat.click();
-        // }
-      // }
-    }
-
-    // Taken from the Google Play Music page.
-    toggleVisualization () {
-      var visualisationIcon = document.querySelector('#hover-icon')
-
-      if (visualisationIcon) {
-        visualisationIcon.click()
+  changeRepeat (mode) {
+    if (!mode) {
+      // Toggle between repeat modes once.
+      this.element.repeat.click()
+    } else {
+      // Toggle between repeat modes until the desired mode is activated.
+      while (this.getRepeat() !== mode) {
+        this.repeat.click()
       }
     }
   }
 
+  toggleVisualization () {
+    var visualisationIcon = document.querySelector('#hover-icon')
+
+    if (visualisationIcon) {
+      visualisationIcon.click()
+    }
+  }
+}
+
+if (!window.GoogleMusic) {
   window.GoogleMusic = new GoogleMusicAPI()
 }
 
@@ -218,156 +221,238 @@ if (window.GoogleMusicAPI === undefined) {
 //         }
 //     };
 
-class EventNotification {
+/*
+ * This binds to various elements on the page and fires events to the main process when parameters
+ * change in the app. The events fired to the app are as follows
+ *
+ * @events songChanged
+ * @params title, artist, album, albumArtUrl, duration
+ *
+ * @events shuffleChanged
+ * @params shuffleMode
+ *
+ * @events repeatChanged
+ * @params repeatMode
+ *
+ * @event  playbackChanged
+ * @params playbackMode
+ *
+ * @event  playbackTimeUpdate
+ * @params currentTime, totalTime
+ */
+class ApplicationState {
   constructor () {
     this.ipcRenderer = require('ipc')
 
-    this.lastTitle = ''
-    this.lastArtist = ''
-    this.lastAlbum = ''
+    this.song = {
+      title: '',
+      artist: '',
+      album: '',
+      albumArtUrl: '',
+      duration: 0
+    }
 
-    this.addObserver = this._init_addObserver()
-    this.addObserver.observe(document.querySelector('#player #playerSongInfo'), {
-      childList: true,
-      subtree: true
-    })
-        // shuffleObserver,
-        // repeatObserver,
-        // playbackObserver,
-        // playbackTimeObserver,
-        // ratingObserver;
+    this.shuffle = null
+    this.repeat = null
+    this.playbackMode = null
+    this.playBackTime = {
+      currentTime: null,
+      totalTime: null
+    }
   }
 
   notify (channel, payload) {
     this.ipcRenderer.send(channel, payload)
   }
 
-  _init_addObserver () {
-    return new MutationObserver((mutations) => {
-      mutations.forEach((m) => {
-        for (var i = 0; i < m.addedNodes.length; i++) {
-          var target = m.addedNodes[i]
-          var name = target.id || target.className
+  _handleStateUpdate (parameterName, newValue, channel) {
+    if (!_.isEqual(this[parameterName], newValue)) {
+      console.log('updating ' + parameterName)
 
-          if (name === 'now-playing-info-wrapper') {
-            var now = new Date()
+      console.log(this[parameterName])
+      console.log(newValue)
 
-            var title = document.querySelector('#player #player-song-title')
-            var artist = document.querySelector('#player #player-artist')
-            var album = document.querySelector('#player .player-album')
-            var art = document.querySelector('#player #playingAlbumArt')
-            var duration = parseInt(document.querySelector('#player #material-player-progress').max, 10) / 1000
+      this[parameterName] = newValue
+      this.notify(channel, newValue)
+    } else {
+      console.log(parameterName + 'update blocked')
+    }
+  }
 
-            title = (title) ? title.innerText : 'Unknown'
-            artist = (artist) ? artist.innerText : 'Unknown'
-            album = (album) ? album.innerText : 'Unknown'
-            art = (art) ? art.src : null
+  songChanged (newSong) {
+    if (newSong.title !== this.song.title || newSong.artist !== this.song.artist || newSong.album !== this.song.album) {
+      this.song = newSong
+      this.notify('songChanged', newSong)
+    }
+  }
 
-            // The art may be a protocol-relative URL, so normalize it to HTTPS.
-            if (art && art.slice(0, 2) === '//') {
-              art = 'https:' + art
-            }
+  shuffleChanged (newShuffle) {
+    this._handleStateUpdate('shuffle', newShuffle, 'shuffleChanged')
+  }
 
-            // Make sure that this is the first of the notifications for the
-            // insertion of the song information elements.
-            if (this.lastTitle !== title || this.lastArtist !== artist || this.lastAlbum !== album) {
-              this.notify('changeCurrentSong', {title, artist, album, art, duration})
+  repeatChanged (newRepeat) {
+    this._handleStateUpdate('repeat', newRepeat, 'repeatChanged')
+  }
 
-              this.lastTitle = title
-              this.lastArtist = artist
-              this.lastAlbum = album
-            }
+  playbackChanged (newPlaybackMode) {
+    this._handleStateUpdate('playbackMode', newPlaybackMode, 'playbackChanged')
+  }
 
-            // Fire the rating observer if the thumbs exist (no harm if already observing)
-            // Ensure this is below notifySong, otherwise it'll apply the loved status of the current song to the previous song (#390)
-            // GoogleMusicApp.ratingChanged(MusicAPI.Rating.getRating());
+  playbackTimeUpdate (newPlaybackTime) {
+    // this._handleStateUpdate('playbackMode', newPlaybackTime, 'playbackTimeUpdate')
+  }
+}
+
+const applicationState = new ApplicationState()
+
+class EventObserver {
+  constructor (mutationObserverCallback, selectorString, options) {
+    let mutationObserver = new MutationObserver(mutationObserverCallback)
+    let selector = document.querySelector(selectorString)
+
+    mutationObserver.observe(selector, options)
+    return mutationObserver
+  }
+}
+
+class EventNotification {
+  constructor () {
+    this.song = {
+      title: '',
+      artist: '',
+      album: '',
+      albumArtUrl: '',
+      duration: 0
+    }
+
+    this.shuffle = null
+    this.repeat = null
+    this.playbackMode = null
+
+    this.changeSongObserver = new EventObserver(this._changeSongObserverCallback,
+      '#player #playerSongInfo', {
+        childList: true,
+        subtree: true
+      })
+
+    this.shuffleObserver = new EventObserver(this._shuffleObserverCallback,
+      '#player [data-id="shuffle"]', {
+        attributes: true
+      })
+
+    this.repeatObserver = new EventObserver(this._repeatObserverCallback,
+      '#player [data-id="repeat"]', {
+        attributes: true
+      })
+
+    this.playbackObserver = new EventObserver(this._playbackObserverCallback,
+      '#player [data-id="play-pause"]', {
+        attributes: true
+      })
+
+    this.playbackTimeObserver = new EventObserver(this._playbackTimeObserverCallback,
+      '#player #material-player-progress', {
+        attributes: true
+      })
+  }
+
+  // ------------------------------------------------------------ MUTATION OBSERVER CALLBACKS
+  _changeSongObserverCallback (mutations) {
+    mutations.forEach((mutation) => {
+      for (let i = 0; i < mutation.addedNodes.length; i++) {
+        var target = mutation.addedNodes[i]
+        var name = target.id || target.className
+
+        if (name === 'now-playing-info-wrapper') {
+          var title = document.querySelector('#player #player-song-title')
+          var artist = document.querySelector('#player #player-artist')
+          var album = document.querySelector('#player .player-album')
+          var albumArtUrl = document.querySelector('#player #playingAlbumArt')
+          var duration = parseInt(document.querySelector('#player #material-player-progress').max, 10) / 1000
+
+          title = (title) ? title.innerText : 'Unknown'
+          artist = (artist) ? artist.innerText : 'Unknown'
+          album = (album) ? album.innerText : 'Unknown'
+          albumArtUrl = (albumArtUrl) ? albumArtUrl.src : null
+
+          // The albumArtUrl may be a protocol-relative URL, so normalize it to HTTPS.
+          if (albumArtUrl && albumArtUrl.slice(0, 2) === '//') {
+            albumArtUrl = 'https:' + albumArtUrl
+          }
+
+          // Make sure that this is the first of the notifications for the
+          // insertion of the song information elements.
+          applicationState.songChanged({title, artist, album, albumArtUrl, duration})
+
+          // Fire the rating observer if the thumbs exist (no harm if already observing)
+          // Ensure this is below notifySong, otherwise it'll apply the loved status of the current song to the previous song (#390)
+          // GoogleMusicApp.ratingChanged(MusicAPI.Rating.getRating());
+        }
+      }
+    })
+  }
+
+  _shuffleObserverCallback (mutations) {
+    mutations.forEach((mutation) => {
+      var target = mutation.target
+      var id = target.dataset.id
+      var value = target.getAttribute('value')
+
+      if (id === 'shuffle') {
+        applicationState.shuffleChanged(value)
+      }
+    })
+  }
+
+  _repeatObserverCallback (mutations) {
+    mutations.forEach((mutation) => {
+      var target = mutation.target
+      var id = target.dataset.id
+      var value = target.getAttribute('value')
+
+      if (id === 'repeat') {
+        applicationState.repeatChanged(value)
+      }
+    })
+  }
+
+  _playbackObserverCallback (mutations) {
+    mutations.forEach((mutation) => {
+      var target = mutation.target
+      var id = target.dataset.id
+
+      if (id === 'play-pause') {
+        var mode
+        var playing = target.classList.contains('playing')
+
+        if (playing) {
+          mode = PLAYING
+        } else {
+          // If there is a current song, then the player is paused.
+          if (document.querySelector('#playerSongInfo').childNodes.length) {
+            mode = PAUSED
+          } else {
+            mode = STOPPED
           }
         }
-      })
+
+        applicationState.playbackChanged(mode)
+      }
+    })
+  }
+
+  _playbackTimeObserverCallback (mutations) {
+    mutations.forEach((mutation) => {
+      var target = mutation.target
+      var id = target.id
+
+      if (id === 'material-player-progress') {
+        var currentTime = parseInt(target.value, 10)
+        var totalTime = parseInt(target.max, 10)
+        applicationState.playbackTimeUpdate({currentTime, totalTime})
+      }
     })
   }
 }
 
 window.EventNotificationBus = new EventNotification()
-
-//     shuffleObserver = new MutationObserver(function(mutations) {
-//         mutations.forEach(function(m) {
-//           var target = m.target;
-//           var id = target.dataset.id;
-
-//           if (id == 'shuffle') {
-//               GoogleMusicApp.shuffleChanged(target.getAttribute('value'));
-//           }
-//         })
-//     });
-
-//     repeatObserver = new MutationObserver(function(mutations) {
-//         mutations.forEach(function(m) {
-//             var target = m.target;
-//             var id = target.dataset.id;
-
-//             if (id == 'repeat') {
-//                 GoogleMusicApp.repeatChanged(target.getAttribute('value'));
-//             }
-//         });
-//     });
-
-//     playbackObserver = new MutationObserver(function(mutations) {
-//         mutations.forEach(function(m) {
-//             var target = m.target;
-//             var id = target.dataset.id;
-
-//             if (id == 'play-pause') {
-//                 var mode;
-//                 var playing = target.classList.contains('playing');
-
-//                 if (playing) {
-//                     mode = MusicAPI.Playback.PLAYING;
-//                 } else {
-//                     // If there is a current song, then the player is paused.
-//                     if (document.querySelector('#playerSongInfo').childNodes.length) {
-//                         mode = MusicAPI.Playback.PAUSED;
-//                     } else {
-//                         mode = MusicAPI.Playback.STOPPED;
-//                     }
-//                 }
-
-//                 GoogleMusicApp.playbackChanged(mode);
-//             }
-//         });
-//     });
-
-//     playbackTimeObserver = new MutationObserver(function(mutations) {
-//         mutations.forEach(function(m) {
-//             var target = m.target;
-//             var id = target.id;
-
-//             if (id == 'material-player-progress') {
-//                 var currentTime = parseInt(target.value);
-//                 var totalTime = parseInt(target.max);
-//                 GoogleMusicApp.playbackTimeChanged(currentTime, totalTime);
-//             }
-//         });
-//     });
-
-//     addObserver.observe(document.querySelector('#player #playerSongInfo'), {
-//         childList: true,
-//         subtree: true
-//     });
-
-//     shuffleObserver.observe(document.querySelector('#player [data-id="shuffle"]'), {
-//         attributes: true
-//     });
-    
-//     repeatObserver.observe(document.querySelector('#player [data-id="repeat"]'), {
-//         attributes: true
-//     });
-    
-//     playbackObserver.observe(document.querySelector('#player [data-id="play-pause"]'), {
-//         attributes: true
-//     });
-    
-//     playbackTimeObserver.observe(document.querySelector('#player #material-player-progress'), {
-//         attributes: true
-//     });
-// }
