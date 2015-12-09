@@ -4,6 +4,11 @@ var app = require('app')  // Module to control application life.
 var createMainWindow = require('./createMainWindow')
 var createMainMenu = require('./menu')
 var connectKeyboardShortcuts = require('./shortcuts/')
+var ipcMain = require('ipc')
+
+ipcMain.on('changeCurrentSong', function (event, songDetails) {
+  console.log(songDetails)
+})
 
 // Report crashes to our server.
 // require('crash-reporter').start()

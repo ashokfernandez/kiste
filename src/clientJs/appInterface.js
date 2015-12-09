@@ -1,18 +1,11 @@
+/*global MutationObserver*/
+
 /*
- * js/main.js
+ * GoogleMusicAPI
  *
- * This script is part of the JavaScript interface used to interact with
- * the Google Play Music page, in order to provide notifications functionality.
- *
- * Created by Sajid Anwar.
- *
- * Subject to terms and conditions in LICENSE.md.
- *
+ * Controls the functions of the Google Music player
  */
 
-// This check ensures that, even though this script is run multiple times, our code is only attached once.
-console.log('checking for existing API')
-console.log(window.GoogleMusicAPI)
 if (window.GoogleMusicAPI === undefined) {
   class GoogleMusicAPI {
     constructor () {
@@ -137,10 +130,8 @@ if (window.GoogleMusicAPI === undefined) {
   }
 
   window.GoogleMusic = new GoogleMusicAPI()
-  console.log('Loaded API')
-} else {
-  console.log('didnt load API')
 }
+
 //     /* Create a rating API. */
 //     MusicAPI.Rating = (function() {
 //         var R = {};
@@ -227,59 +218,77 @@ if (window.GoogleMusicAPI === undefined) {
 //         }
 //     };
 
-//     var lastTitle = "";
-//     var lastArtist = "";
-//     var lastAlbum = "";
+class EventNotification {
+  constructor () {
+    this.ipcRenderer = require('ipc')
 
-//     var addObserver,
-//         shuffleObserver,
-//         repeatObserver,
-//         playbackObserver,
-//         playbackTimeObserver,
-//         ratingObserver;
+    this.lastTitle = ''
+    this.lastArtist = ''
+    this.lastAlbum = ''
 
-//     addObserver = new MutationObserver(function(mutations) {
-//         mutations.forEach(function(m) {
-//             for (var i = 0; i < m.addedNodes.length; i++) {
-//                 var target = m.addedNodes[i];
-//                 var name = target.id || target.className;
+    this.addObserver = this._init_addObserver()
+    this.addObserver.observe(document.querySelector('#player #playerSongInfo'), {
+      childList: true,
+      subtree: true
+    })
+        // shuffleObserver,
+        // repeatObserver,
+        // playbackObserver,
+        // playbackTimeObserver,
+        // ratingObserver;
+  }
 
-//                 if (name == 'now-playing-info-wrapper') {
-//                     var now = new Date();
+  notify (channel, payload) {
+    this.ipcRenderer.send(channel, payload)
+  }
 
-//                     var title = document.querySelector('#player #player-song-title');
-//                     var artist = document.querySelector('#player #player-artist');
-//                     var album = document.querySelector('#player .player-album');
-//                     var art = document.querySelector('#player #playingAlbumArt');
-//                     var duration = parseInt(document.querySelector('#player #material-player-progress').max) / 1000;
+  _init_addObserver () {
+    return new MutationObserver((mutations) => {
+      mutations.forEach((m) => {
+        for (var i = 0; i < m.addedNodes.length; i++) {
+          var target = m.addedNodes[i]
+          var name = target.id || target.className
 
-//                     title = (title) ? title.innerText : 'Unknown';
-//                     artist = (artist) ? artist.innerText : 'Unknown';
-//                     album = (album) ? album.innerText : 'Unknown';
-//                     art = (art) ? art.src : null;
+          if (name === 'now-playing-info-wrapper') {
+            var now = new Date()
 
-//                     // The art may be a protocol-relative URL, so normalize it to HTTPS.
-//                     if (art && art.slice(0, 2) === '//') {
-//                         art = 'https:' + art;
-//                     }
+            var title = document.querySelector('#player #player-song-title')
+            var artist = document.querySelector('#player #player-artist')
+            var album = document.querySelector('#player .player-album')
+            var art = document.querySelector('#player #playingAlbumArt')
+            var duration = parseInt(document.querySelector('#player #material-player-progress').max, 10) / 1000
 
-//                     // Make sure that this is the first of the notifications for the
-//                     // insertion of the song information elements.
-//                     if (lastTitle != title || lastArtist != artist || lastAlbum != album) {
-//                         GoogleMusicApp.notifySong(title, artist, album, art, duration);
+            title = (title) ? title.innerText : 'Unknown'
+            artist = (artist) ? artist.innerText : 'Unknown'
+            album = (album) ? album.innerText : 'Unknown'
+            art = (art) ? art.src : null
 
-//                         lastTitle = title;
-//                         lastArtist = artist;
-//                         lastAlbum = album;
-//                     }
+            // The art may be a protocol-relative URL, so normalize it to HTTPS.
+            if (art && art.slice(0, 2) === '//') {
+              art = 'https:' + art
+            }
 
-//                     // Fire the rating observer if the thumbs exist (no harm if already observing)
-//                     // Ensure this is below notifySong, otherwise it'll apply the loved status of the current song to the previous song (#390)
-//                     GoogleMusicApp.ratingChanged(MusicAPI.Rating.getRating());
-//                 }
-//             }
-//         });
-//     });
+            // Make sure that this is the first of the notifications for the
+            // insertion of the song information elements.
+            if (this.lastTitle !== title || this.lastArtist !== artist || this.lastAlbum !== album) {
+              this.notify('changeCurrentSong', {title, artist, album, art, duration})
+
+              this.lastTitle = title
+              this.lastArtist = artist
+              this.lastAlbum = album
+            }
+
+            // Fire the rating observer if the thumbs exist (no harm if already observing)
+            // Ensure this is below notifySong, otherwise it'll apply the loved status of the current song to the previous song (#390)
+            // GoogleMusicApp.ratingChanged(MusicAPI.Rating.getRating());
+          }
+        }
+      })
+    })
+  }
+}
+
+window.EventNotificationBus = new EventNotification()
 
 //     shuffleObserver = new MutationObserver(function(mutations) {
 //         mutations.forEach(function(m) {
