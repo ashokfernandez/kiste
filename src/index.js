@@ -5,6 +5,7 @@ var createMainWindow = require('./createMainWindow')
 var createMainMenu = require('./menu')
 var connectKeyboardShortcuts = require('./shortcuts/')
 var ipcMain = require('ipc')
+const globalShortcut = require('global-shortcut')
 var _ = require('lodash')
 
 ipcMain.on('songChanged', function (event, payload) {
@@ -26,6 +27,9 @@ ipcMain.on('playbackChanged', function (event, payload) {
   console.log('playbackChanged')
   console.log(payload)
 })
+
+
+
 
 // ipcMain.on('playbackTimeUpdate', function (event, payload) {
 //   console.log('playbackTimeUpdate')
@@ -54,6 +58,22 @@ app.on('ready', function () {
   // Create the browser window.
   mainWindow = createMainWindow(true)
   mainWindow.loadUrl(GOOGLE_MUSIC_URL)
+
+  globalShortcut.register('MediaNextTrack', () => {
+    mainWindow.webContents.send('nextTrack')
+  })
+
+  globalShortcut.register('MediaPreviousTrack', () => {
+    mainWindow.webContents.send('previousTrack')
+  })
+
+  globalShortcut.register('MediaStop', () => {
+    mainWindow.webContents.send('togglePlay')
+  })
+
+  globalShortcut.register('MediaPlayPause', () => {
+    mainWindow.webContents.send('togglePlay')
+  })
 
   // Register the keyboard shortcuts
   connectKeyboardShortcuts(app, mainWindow)

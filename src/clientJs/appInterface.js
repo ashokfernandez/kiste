@@ -8,6 +8,7 @@
 
 var remote = require('remote')
 var _ = remote.require('lodash')
+var ipcRenderer = require('ipc')
 
 const STOPPED = 0
 const PAUSED = 1
@@ -242,7 +243,7 @@ if (!window.GoogleMusic) {
  */
 class ApplicationState {
   constructor () {
-    this.ipcRenderer = require('ipc')
+    this.ipcRenderer = ipcRenderer
 
     this.song = {
       title: '',
@@ -464,3 +465,22 @@ class EventNotification {
 }
 
 window.EventNotificationBus = new EventNotification()
+
+class EventReceiver {
+  constructor () {
+    this.ipcRenderer = ipcRenderer  
+    this._registerHandler('previousTrack', window.GoogleMusic, 'rewind')
+    this._registerHandler('togglePlay', window.GoogleMusic, 'playPause')
+    this._registerHandler('nextTrack', window.GoogleMusic, 'forward')
+  }
+
+  // Calls method on object when channel receives an event. Passes the event object to the method 
+  // as a parameter
+  _registerHandler (channel, object, method) {
+    this.ipcRenderer.on(channel, (event) => {
+      object[method](event)
+    })
+  }
+}
+
+window.EventReceiverHandler = new EventReceiver()
