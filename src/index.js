@@ -5,10 +5,32 @@ var createMainWindow = require('./createMainWindow')
 var createMainMenu = require('./menu')
 var connectKeyboardShortcuts = require('./shortcuts/')
 var ipcMain = require('ipc')
+var _ = require('lodash')
 
-ipcMain.on('changeCurrentSong', function (event, songDetails) {
-  console.log(songDetails)
+ipcMain.on('songChanged', function (event, payload) {
+  console.log('songChanged')
+  console.log(payload)
 })
+
+ipcMain.on('shuffleChanged', function (event, payload) {
+  console.log('shuffleChanged')
+  console.log(payload)
+})
+
+ipcMain.on('repeatChanged', function (event, payload) {
+  console.log('repeatChanged')
+  console.log(payload)
+})
+
+ipcMain.on('playbackChanged', function (event, payload) {
+  console.log('playbackChanged')
+  console.log(payload)
+})
+
+// ipcMain.on('playbackTimeUpdate', function (event, payload) {
+//   console.log('playbackTimeUpdate')
+//   console.log(payload)
+// })
 
 // Report crashes to our server.
 // require('crash-reporter').start()

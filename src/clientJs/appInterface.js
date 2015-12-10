@@ -279,8 +279,10 @@ class ApplicationState {
     }
   }
 
+  // Added custom checker for song change as _.isEquals was giving inconsistent results
   songChanged (newSong) {
-    if (newSong.title !== this.song.title || newSong.artist !== this.song.artist || newSong.album !== this.song.album) {
+    if (newSong.title !== this.song.title || newSong.artist !== this.song.artist ||
+        newSong.album !== this.song.album) {
       this.song = newSong
       this.notify('songChanged', newSong)
     }
@@ -305,6 +307,9 @@ class ApplicationState {
 
 const applicationState = new ApplicationState()
 
+/*
+ * Wraps MutationObserver to construct a mutation observer for DOM changes
+ */
 class EventObserver {
   constructor (mutationObserverCallback, selectorString, options) {
     let mutationObserver = new MutationObserver(mutationObserverCallback)
@@ -315,6 +320,9 @@ class EventObserver {
   }
 }
 
+/*
+ * Loads all of the relavant EventObservers and updates the application state when any of them change
+ */
 class EventNotification {
   constructor () {
     this.song = {
