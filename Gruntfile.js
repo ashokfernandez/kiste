@@ -17,10 +17,18 @@ module.exports = function (grunt) {
       }
     },
 
+    sass: {
+      dist: {
+        files: {
+          'lib/client/customStyles.css': 'src/client/customStyles.scss'
+        }
+      }
+    },
+
     clean: {
       lib: ['./lib/**']
     }
   })
 
-  grunt.registerTask('build', ['clean', 'babel'])
+  grunt.registerTask('build', ['clean', 'sass', 'babel'])
 }

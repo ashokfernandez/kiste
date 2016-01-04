@@ -1,6 +1,6 @@
 var app = require('app')
 var BrowserWindow = require('browser-window')
-var clientJs = require('./clientJs')
+var client = require('./client')
 
 var WINDOW_INSTANCE
 
@@ -43,9 +43,14 @@ function createMainWindow (showDevTools) {
 
   // Inject in our js API for the controls
   mainWindow.webContents.on('dom-ready', () => {
-    clientJs('appInterface')
+    client('appInterface.js')
       .then((appInterface) => {
         mainWindow.webContents.executeJavaScript(appInterface)
+      })
+
+    client('customStyles.css')
+      .then((customStyles) => {
+        mainWindow.webContents.insertCSS(customStyles)
       })
   })
 

@@ -7,20 +7,19 @@ Promise.promisifyAll(fs)
 
 var FILE_CACHE = {}
 
-function loadJsFileAsString (jsFileName) {
-  // Add the SQL suffix to the queries filename if it isn't there already
-  if (!_.endsWith(jsFileName, '.js')) {
-    jsFileName += '.js'
-  }
-
-  var pathToJsFile = path.join(__dirname, jsFileName)
+function loadFileAsString (fileName) {
+  var pathToJsFile = path.join(__dirname, fileName)
   var cachedJs = FILE_CACHE[pathToJsFile]
 
   if (cachedJs) {
     return Promise.resolve(cachedJs)
   } else {
     return fs.readFileAsync(pathToJsFile, 'utf8')
+      .then((fileString) => {
+        FILE_CACHE[pathToJsFile] = fileString
+        return Promise.resolve(fileString)
+      })
   }
 }
 
-module.exports = loadJsFileAsString
+module.exports = loadFileAsString
