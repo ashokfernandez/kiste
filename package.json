@@ -1,6 +1,6 @@
 {
   "name": "kiste",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A cross platform desktop player for Google Play Music",
   "main": "./lib/index.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "clean:osx": "rm -rf ./dist/osx && rm -rf ./build/osx",
     "clean:win": "rm -rf ./dist/win && rm -rf ./build/win",
     "build": "npm run clean && npm run build:osx && npm run build:win",
-    "build:osx": "npm test && npm run clean:osx && electron-packager . \"Kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=0.36.2 --icon=assets/osx/icon.icns --ignore=\"src|dist|build|specs|assets|circle\"",
-    "build:win": "npm test && npm run clean:win && electron-packager . \"Kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=0.36.2 --icon=assets/win/icon.ico --ignore=\"src|dist|build|specs|assets|circle\"",
+    "build:osx": "npm test && npm run clean:osx && electron-packager . \"Kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=0.36.7 --icon=assets/osx/icon.icns --ignore=\"src|dist|build|specs|assets|circle\"",
+    "build:win": "npm test && npm run clean:win && electron-packager . \"Kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=0.36.7 --icon=assets/win/icon.ico --ignore=\"src|dist|build|specs|assets|circle\"",
     "pack": "npm run pack:osx && npm run pack:win",
     "pack:osx": "npm run build:osx && electron-builder \"build/osx/kiste-darwin-x64/Kiste.app\" --platform=osx --out=\"dist/osx\" --config=packager.json",
     "pack:win": "npm run build:win && electron-builder \"build/win/kiste-win32-ia32\" --platform=win --out=\"dist/win\" --config=packager.json"
@@ -38,6 +38,7 @@
     "electron-localshortcut": "^0.6.0",
     "electron-shortcut-loader": "^0.1.3",
     "lodash": "^3.10.1",
+    "node-notifier": "^4.4.0",
     "which": "^1.2.0"
   },
   "devDependencies": {

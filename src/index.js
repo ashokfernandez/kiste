@@ -1,16 +1,29 @@
-var GOOGLE_MUSIC_URL = 'https://music.google.com/'
-var app = require('app')  // Module to control application life.
+const GOOGLE_MUSIC_URL = 'https://music.google.com/'
+import app from 'app'  // Module to control application life.
 
-var createMainWindow = require('./createMainWindow')
-var createMainMenu = require('./menu')
-var connectKeyboardShortcuts = require('./shortcuts/')
-var ipcMain = require('ipc')
-const globalShortcut = require('global-shortcut')
-var _ = require('lodash')
+import createMainWindow from './createMainWindow'
+import createMainMenu from './menu'
+import connectKeyboardShortcuts from './shortcuts/'
+
+import ipcMain from 'ipc'
+
+import _ from 'lodash'
+import globalShortcut from 'global-shortcut'
+import notifier from 'node-notifier'
 
 ipcMain.on('songChanged', function (event, payload) {
   console.log('songChanged')
-  console.log(payload)
+  notifier.notify({
+    title: payload.title,
+    message: `${payload.artist} - ${payload.album}`,
+    icon: payload.albumArtUrl
+  },
+  function (err, response) {
+    console.log('notification done')
+    if (!err) {
+      console.log(response)
+    }
+  })
 })
 
 ipcMain.on('shuffleChanged', function (event, payload) {
@@ -27,7 +40,6 @@ ipcMain.on('playbackChanged', function (event, payload) {
   console.log('playbackChanged')
   console.log(payload)
 })
-
 
 
 

@@ -373,10 +373,10 @@ class EventNotification {
         var name = target.id || target.className
 
         if (name === 'now-playing-info-wrapper') {
-          var title = document.querySelector('#player #player-song-title')
+          var title = document.querySelector('#player #currently-playing-title')
           var artist = document.querySelector('#player #player-artist')
           var album = document.querySelector('#player .player-album')
-          var albumArtUrl = document.querySelector('#player #playingAlbumArt')
+          var albumArtUrl = document.querySelector('#player #playingBarArt')
           var duration = parseInt(document.querySelector('#player #material-player-progress').max, 10) / 1000
 
           title = (title) ? title.innerText : 'Unknown'
@@ -468,13 +468,13 @@ window.EventNotificationBus = new EventNotification()
 
 class EventReceiver {
   constructor () {
-    this.ipcRenderer = ipcRenderer  
+    this.ipcRenderer = ipcRenderer
     this._registerHandler('previousTrack', window.GoogleMusic, 'rewind')
     this._registerHandler('togglePlay', window.GoogleMusic, 'playPause')
     this._registerHandler('nextTrack', window.GoogleMusic, 'forward')
   }
 
-  // Calls method on object when channel receives an event. Passes the event object to the method 
+  // Calls method on object when channel receives an event. Passes the event object to the method
   // as a parameter
   _registerHandler (channel, object, method) {
     this.ipcRenderer.on(channel, (event) => {

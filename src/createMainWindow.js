@@ -1,6 +1,6 @@
-var app = require('app')
-var BrowserWindow = require('browser-window')
-var client = require('./client')
+import app from 'app'
+import BrowserWindow from 'browser-window'
+import client from './client'
 
 var WINDOW_INSTANCE
 
@@ -68,4 +68,5 @@ function mainWindowFactory (showDevTools) {
 
   return WINDOW_INSTANCE
 }
-module.exports = mainWindowFactory
+
+export default mainWindowFactory
