@@ -4,6 +4,7 @@ import app from 'app'  // Module to control application life.
 import createMainWindow from './createMainWindow'
 import createMainMenu from './menu'
 import connectKeyboardShortcuts from './shortcuts/'
+import TempImage from './TempImage'
 
 import ipcMain from 'ipc'
 
@@ -12,18 +13,23 @@ import globalShortcut from 'global-shortcut'
 import notifier from 'node-notifier'
 
 ipcMain.on('songChanged', function (event, payload) {
-  console.log('songChanged')
-  notifier.notify({
-    title: payload.title,
-    message: `${payload.artist} - ${payload.album}`,
-    icon: payload.albumArtUrl
-  },
-  function (err, response) {
-    console.log('notification done')
-    if (!err) {
-      console.log(response)
-    }
-  })
+  var albumArt = new TempImage(payload.albumArtUrl)
+
+  albumArt.download()
+    .then((path) => {
+      notifier.notify({
+        title: payload.title,
+        subtitle: payload.artist,
+        message: payload.album,
+        contentImage: path
+      },
+      function (err, response) {
+        albumArt.done()
+        if (!err) {
+          console.log(response)
+        }
+      })
+    })
 })
 
 ipcMain.on('shuffleChanged', function (event, payload) {

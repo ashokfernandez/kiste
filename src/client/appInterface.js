@@ -376,7 +376,7 @@ class EventNotification {
           var title = document.querySelector('#player #currently-playing-title')
           var artist = document.querySelector('#player #player-artist')
           var album = document.querySelector('#player .player-album')
-          var albumArtUrl = document.querySelector('#player #playingBarArt')
+          var albumArtUrl = document.querySelector('#player #playerBarArt')
           var duration = parseInt(document.querySelector('#player #material-player-progress').max, 10) / 1000
 
           title = (title) ? title.innerText : 'Unknown'
