@@ -4,55 +4,12 @@ import app from 'app'  // Module to control application life.
 import createMainWindow from './createMainWindow'
 import createMainMenu from './menu'
 import connectKeyboardShortcuts from './shortcuts/'
-import TempImage from './TempImage'
+import * as desktopNotifications from './desktopNotifications'
 
 import ipcMain from 'ipc'
 
-import _ from 'lodash'
+// import _ from 'lodash'
 import globalShortcut from 'global-shortcut'
-import notifier from 'node-notifier'
-
-ipcMain.on('songChanged', function (event, payload) {
-  var albumArt = new TempImage(payload.albumArtUrl)
-
-  albumArt.download()
-    .then((path) => {
-      notifier.notify({
-        title: payload.title,
-        subtitle: payload.artist,
-        message: payload.album,
-        contentImage: path
-      },
-      function (err, response) {
-        albumArt.done()
-        if (!err) {
-          console.log(response)
-        }
-      })
-    })
-})
-
-ipcMain.on('shuffleChanged', function (event, payload) {
-  console.log('shuffleChanged')
-  console.log(payload)
-})
-
-ipcMain.on('repeatChanged', function (event, payload) {
-  console.log('repeatChanged')
-  console.log(payload)
-})
-
-ipcMain.on('playbackChanged', function (event, payload) {
-  console.log('playbackChanged')
-  console.log(payload)
-})
-
-
-
-// ipcMain.on('playbackTimeUpdate', function (event, payload) {
-//   console.log('playbackTimeUpdate')
-//   console.log(payload)
-// })
 
 // Report crashes to our server.
 // require('crash-reporter').start()
@@ -112,4 +69,36 @@ app.on('ready', function () {
 
 // app.on('quit', function () {
   // console.log('quit')
+// })
+
+// ------------------------------------------------------------------------
+// ------------------------------------------------------------------------
+// Events fired from web context
+// ------------------------------------------------------------------------
+// ------------------------------------------------------------------------
+
+ipcMain.on('songChanged', function (event, newSongDetails) {
+  // if (!mainWindow.isFocused()) {
+    desktopNotifications.songChanged(newSongDetails)
+  // }
+})
+
+ipcMain.on('shuffleChanged', function (event, payload) {
+  console.log('shuffleChanged')
+  console.log(payload)
+})
+
+ipcMain.on('repeatChanged', function (event, payload) {
+  console.log('repeatChanged')
+  console.log(payload)
+})
+
+ipcMain.on('playbackChanged', function (event, payload) {
+  console.log('playbackChanged')
+  console.log(payload)
+})
+
+// ipcMain.on('playbackTimeUpdate', function (event, payload) {
+//   console.log('playbackTimeUpdate')
+//   console.log(payload)
 // })

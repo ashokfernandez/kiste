@@ -48,7 +48,7 @@ function createMainWindow (showDevTools) {
         mainWindow.webContents.executeJavaScript(appInterface)
       })
 
-    client('customStyles.css')
+    client('styling/main.css')
       .then((customStyles) => {
         mainWindow.webContents.insertCSS(customStyles)
       })
