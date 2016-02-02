@@ -3,7 +3,10 @@ import app from 'app'  // Module to control application life.
 
 import createMainWindow from './createMainWindow'
 import createMainMenu from './menu'
-import connectKeyboardShortcuts from './shortcuts/'
+
+// BACK AND FORWARD BROWSER SHORTCUTS ARE BROKEN
+// import connectKeyboardShortcuts from './shortcuts'
+
 import * as desktopNotifications from './desktopNotifications'
 
 import ipcMain from 'ipc'
@@ -51,7 +54,7 @@ app.on('ready', function () {
   })
 
   // Register the keyboard shortcuts
-  connectKeyboardShortcuts(app, mainWindow)
+  // connectKeyboardShortcuts(app, mainWindow)
   createMainMenu(app, mainWindow)
 })
 
@@ -78,9 +81,9 @@ app.on('ready', function () {
 // ------------------------------------------------------------------------
 
 ipcMain.on('songChanged', function (event, newSongDetails) {
-  // if (!mainWindow.isFocused()) {
+  if (!mainWindow.isFocused()) {
     desktopNotifications.songChanged(newSongDetails)
-  // }
+  }
 })
 
 ipcMain.on('shuffleChanged', function (event, payload) {

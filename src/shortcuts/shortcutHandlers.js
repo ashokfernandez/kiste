@@ -1,4 +1,4 @@
-var _ = require('lodash')
+import _ from 'lodash'
 
 function handleShortcut (shortCutEvent, app, browserWindow) {
   var eventHandlers = eventHandlerMap[shortCutEvent.event]
@@ -42,4 +42,4 @@ function hideMainWindow (app, browserWindow) {
   }
 }
 
-module.exports = handleShortcut
+export default handleShortcut

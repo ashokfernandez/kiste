@@ -1,14 +1,14 @@
-module.exports = {
+const SHORTCUT_DEFINITIONS = {
   'Command+[': {
-    event: 'browser-back',
-    cmdOrCtrl: true
+    event: 'browser-back'
   },
   'Command+]': {
-    event: 'browser-forward',
-    cmdOrCtrl: true
-  },
+    event: 'browser-forward'
+  }
   // 'Command+w': {
   //   event: 'command-w',
   //   cmdOrCtrl: true
   // }
 }
+
+export default SHORTCUT_DEFINITIONS

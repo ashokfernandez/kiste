@@ -6,7 +6,6 @@ function songChanged (newSongDetails) {
   var albumArt = new TempImage(newSongDetails.albumArtUrl)
   var applicationIconPath = getIconPath()
 
-  console.log(applicationIconPath)
   albumArt.download()
     .then((path) => {
       notifier.notify({

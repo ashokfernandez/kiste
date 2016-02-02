@@ -24,7 +24,7 @@ gulp.task('babel', () => {
 
 gulp.task('copyAssets', () => {
   // App icon
-  return gulp.src('./assets/appicon.jpeg')
+  return gulp.src('./assets/appicon.png')
     .pipe(gulp.dest('./lib/assets/'))
 })
 
