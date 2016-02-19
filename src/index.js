@@ -5,7 +5,7 @@ import createMainWindow from './createMainWindow'
 import createMainMenu from './menu'
 
 // BACK AND FORWARD BROWSER SHORTCUTS ARE BROKEN
-// import connectKeyboardShortcuts from './shortcuts'
+import connectKeyboardShortcuts from './shortcuts'
 
 import * as desktopNotifications from './desktopNotifications'
 
@@ -13,6 +13,8 @@ import ipcMain from 'ipc'
 
 // import _ from 'lodash'
 import globalShortcut from 'global-shortcut'
+
+const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = false
 
 // Report crashes to our server.
 // require('crash-reporter').start()
@@ -34,7 +36,7 @@ app.on('window-all-closed', function () {
 // initialization and is ready to create browser windows.
 app.on('ready', function () {
   // Create the browser window.
-  mainWindow = createMainWindow(true)
+  mainWindow = createMainWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
   mainWindow.loadUrl(GOOGLE_MUSIC_URL)
 
   globalShortcut.register('MediaNextTrack', () => {
@@ -54,7 +56,7 @@ app.on('ready', function () {
   })
 
   // Register the keyboard shortcuts
-  // connectKeyboardShortcuts(app, mainWindow)
+  connectKeyboardShortcuts(app, mainWindow)
   createMainMenu(app, mainWindow)
 })
 

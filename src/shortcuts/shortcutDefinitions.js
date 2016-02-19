@@ -11,4 +11,6 @@ const SHORTCUT_DEFINITIONS = {
   // }
 }
 
-export default SHORTCUT_DEFINITIONS
+// For some reason electron crashes if we use the `export default` ES6 syntax here
+// so don't change this
+module.exports = SHORTCUT_DEFINITIONS

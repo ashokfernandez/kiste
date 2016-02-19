@@ -9,7 +9,7 @@ const SHORTCUT_DEFINITIONS = path.resolve(path.join(__dirname, 'shortcutDefiniti
 function register (app, browserWindow) {
   shortcutDefinitions.load(SHORTCUT_DEFINITIONS, {
     autoRegister: true,
-    cmdOrCtrl: true,
+    cmdOrCtrl: true
   }, app)
 
   app.on('shortcut-press', function (shortCutEvent) {
