@@ -6,9 +6,8 @@
  * Controls the functions of the Google Music player
  */
 
-var remote = require('remote')
-var _ = remote.require('lodash')
-var ipcRenderer = require('ipc')
+const { remote, ipcRenderer } = require('electron')
+const _ = remote.require('lodash')
 
 const STOPPED = 0
 const PAUSED = 1
@@ -26,17 +25,18 @@ const NO_SHUFFLE = 'NO_SHUFFLE'
 class GoogleMusicAPI {
   constructor () {
     this.element = {
-      volumeSlider: this._selector('#material-vslider'),
-      playPause: this._selector('#player [data-id="play-pause"]'),
-      forward: this._selector('#player [data-id="forward"]'),
-      rewind: this._selector('#player [data-id="rewind"]'),
-      shuffle: this._selector('#player [data-id="shuffle"]'),
-      repeat: this._selector('#player [data-id="repeat"]'),
-      playback: this._selector('#player #material-player-progress')
+      getVolumeSlider: () => { return document.querySelector('#material-vslider') },
+      getPlayPause: () => { return document.querySelector('[data-id="play-pause"]') },
+      getForward: () => { return document.querySelector('[data-id="forward"]') },
+      getRewind: () => { return document.querySelector('[data-id="rewind"]') },
+      getShuffle: () => { return document.querySelector('[data-id="shuffle"]') },
+      getRepeat: () => { return document.querySelector('[data-id="repeat"]') },
+      getPlayback: () => { return document.querySelector('#player #material-player-progress') }
     }
 
     // Change volume step from 5 to 1 so we can easily change the value
-    this.element.volumeSlider.step = 1
+    // console.log(this.element.getVolumeSlider())
+    // this.element.getVolumeSlider().step = 1
   }
 
   _selector (selectorTargetString) {
@@ -46,7 +46,7 @@ class GoogleMusicAPI {
   // ------------------------------------------------------------ VOLUME CONTROL
 
   getVolume () {
-    return parseInt(this.element.volumeSlider.value, 10)
+    return parseInt(this.element.getVolumeSlider().value, 10)
   }
 
   // Sets the volume to a level between 0 - 100
@@ -64,7 +64,7 @@ class GoogleMusicAPI {
     amount = amount || 1
 
     for (var i = 0; i < amount; i++) {
-      this.element.volumeSlider.increment()
+      this.element.getVolumeSlider().increment()
     }
   }
 
@@ -72,39 +72,42 @@ class GoogleMusicAPI {
     amount = amount || 1
 
     for (var i = 0; i < amount; i++) {
-      this.element.volumeSlider.decrement()
+      this.element.getVolumeSlider().decrement()
     }
   }
 
   // ------------------------------------------------------------ VOLUME CONTROL
   getPlaybackTime () {
-    return parseInt(this.element.playback.value, 10)
+    return parseInt(this.element.getPlayback().value, 10)
   }
 
   setPlaybackTime (milliseconds) {
-    this.element.playback.value = milliseconds
-    this.element.playback.fire('change')
+    this.element.getPlayback().value = milliseconds
+    this.element.getPlayback().fire('change')
   }
 
   // Playback functions.
   playPause () {
-    this.element.playPause.click()
+
+    console.log('Client play pause')
+    console.log(this.element.getPlayPause())
+    this.element.getPlayPause().click()
   }
 
   forward () {
-    this.element.forward.click()
+    this.element.getForward().click()
   }
 
   rewind () {
-    this.element.rewind.click()
+    this.element.getRewind().click()
   }
 
   getShuffle () {
-    return this.element.shuffle.getAttribute('value')
+    return this.element.getShuffle().getAttribute('value')
   }
 
   toggleShuffle () {
-    this.element.shuffle.click()
+    this.element.getShuffle().click()
   }
 
   getRepeat () {
@@ -132,9 +135,6 @@ class GoogleMusicAPI {
   }
 }
 
-if (!window.GoogleMusic) {
-  window.GoogleMusic = new GoogleMusicAPI()
-}
 
 //     /* Create a rating API. */
 //     MusicAPI.Rating = (function() {
@@ -243,8 +243,6 @@ if (!window.GoogleMusic) {
  */
 class ApplicationState {
   constructor () {
-    this.ipcRenderer = ipcRenderer
-
     this.song = {
       title: '',
       artist: '',
@@ -263,7 +261,7 @@ class ApplicationState {
   }
 
   notify (channel, payload) {
-    this.ipcRenderer.send(channel, payload)
+    ipcRenderer.send(channel, payload)
   }
 
   _handleStateUpdate (parameterName, newValue, channel) {
@@ -464,11 +462,8 @@ class EventNotification {
   }
 }
 
-window.EventNotificationBus = new EventNotification()
-
 class EventReceiver {
   constructor () {
-    this.ipcRenderer = ipcRenderer
     this._registerHandler('previousTrack', window.GoogleMusic, 'rewind')
     this._registerHandler('togglePlay', window.GoogleMusic, 'playPause')
     this._registerHandler('nextTrack', window.GoogleMusic, 'forward')
@@ -477,10 +472,14 @@ class EventReceiver {
   // Calls method on object when channel receives an event. Passes the event object to the method
   // as a parameter
   _registerHandler (channel, object, method) {
-    this.ipcRenderer.on(channel, (event) => {
+    ipcRenderer.on(channel, (event) => {
       object[method](event)
     })
   }
 }
 
-window.EventReceiverHandler = new EventReceiver()
+window.onload = function () {
+  window.GoogleMusic = new GoogleMusicAPI()
+  window.EventReceiverHandler = new EventReceiver()
+  window.EventNotificationBus = new EventNotification()
+}

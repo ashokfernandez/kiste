@@ -1,5 +1,4 @@
-import app from 'app'
-import BrowserWindow from 'browser-window'
+import { app, BrowserWindow } from 'electron'
 import client from './client'
 
 var WINDOW_INSTANCE
@@ -8,11 +7,7 @@ function createMainWindow (showDevTools) {
   var mainWindow = new BrowserWindow({
     width: 1400,
     height: 950,
-    'title-bar-style': 'hidden-inset',
-    'web-preferences': {
-      webgl: true,
-      webaudio: true
-    }
+    titleBarStyle: 'hidden'
   })
 
   // Emitted when the x is pressed on the main window
@@ -43,14 +38,15 @@ function createMainWindow (showDevTools) {
 
   // Inject in our js API for the controls
   mainWindow.webContents.on('dom-ready', () => {
+    // client('modifyStyling.js')
+      // .then((modifyStyling) => {
+        // mainWindow.webContents.executeJavaScript(modifyStyling)
+    // client('styling/main.css')
+      // .then((customStyles) => {
+        // mainWindow.webContents.insertCSS(customStyles)
     client('appInterface.js')
       .then((appInterface) => {
         mainWindow.webContents.executeJavaScript(appInterface)
-      })
-
-    client('styling/main.css')
-      .then((customStyles) => {
-        mainWindow.webContents.insertCSS(customStyles)
       })
   })
 

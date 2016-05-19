@@ -1,4 +1,4 @@
-var Menu = require('menu')
+import { Menu } from 'electron'
 
 function createMainMenu (app, mainWindow) {
   // Create the Application's main menu

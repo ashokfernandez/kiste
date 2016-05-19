@@ -1,9 +1,50 @@
-#material-app-bar {
-  padding-top: 14px;
-  padding-bottom: 6px;
-  height: 84px;
+// // Defined Color Variables
+// @import 'variables';
+// @import 'accents';
+// // Random Gradients/Helpers
+// @import 'buttons';
+// @import 'misc';
+// // Play Midnight Styles
+// @import 'core';
+// @import 'nav';
+// @import 'loading';
+// @import 'cards';
+// @import 'player';
+// @import 'page';
+// @import 'song-table';
+// @import 'queue';
+// @import 'forms';
+// // Gross, but Google uses material class in places but not others, so a safety fallback
+// .material {
+//     @import 'accents';
+//     // Random Gradients/Helpers
+//     @import 'buttons';
+//     @import 'misc';
+//     // Play Midnight Styles
+//     @import 'core';
+//     @import 'nav';
+//     @import 'menus';
+//     @import 'loading';
+//     @import 'cards';
+//     @import 'player';
+//     @import 'page';
+//     @import 'song-table';
+//     @import 'queue';
+//     @import 'forms';
+// }
+
+$spacer-height: 10px;
+
+// Spacer at the top of the page
+#main-spacer {
+  height: $spacer-height;
+  width: 100%;
+  background-color: #ef6c00;
 }
 
-#material-one-right {
-  visibility: hidden;
+#drawer-spacer {
+  height: $spacer-height;
+  width: 100%;
 }
+
+@import 'dark'

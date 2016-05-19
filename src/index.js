@@ -1,27 +1,22 @@
 const GOOGLE_MUSIC_URL = 'https://music.google.com/'
-import app from 'app'  // Module to control application life.
+import { app, ipcMain, globalShortcut } from 'electron'  // Module to control application life.
 
 import createMainWindow from './createMainWindow'
 import createMainMenu from './menu'
 
 // BACK AND FORWARD BROWSER SHORTCUTS ARE BROKEN
-import connectKeyboardShortcuts from './shortcuts'
-
+// import connectKeyboardShortcuts from './shortcuts'
 import * as desktopNotifications from './desktopNotifications'
 
-import ipcMain from 'ipc'
-
 // import _ from 'lodash'
-import globalShortcut from 'global-shortcut'
 
-const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = false
-
+const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = true
 // Report crashes to our server.
 // require('crash-reporter').start()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-var mainWindow = null
+let mainWindow = null
 
 // Quit when all windows are closed
 app.on('window-all-closed', function () {
@@ -37,7 +32,7 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
   // Create the browser window.
   mainWindow = createMainWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
-  mainWindow.loadUrl(GOOGLE_MUSIC_URL)
+  mainWindow.loadURL(GOOGLE_MUSIC_URL)
 
   globalShortcut.register('MediaNextTrack', () => {
     mainWindow.webContents.send('nextTrack')
@@ -55,26 +50,26 @@ app.on('ready', function () {
     mainWindow.webContents.send('togglePlay')
   })
 
-  // Register the keyboard shortcuts
-  connectKeyboardShortcuts(app, mainWindow)
+  // // Register the keyboard shortcuts
+  // connectKeyboardShortcuts(app, mainWindow) // electron-shortchut-loader is out of date
   createMainMenu(app, mainWindow)
 })
 
-// app.on('will-quit', function () {
+app.on('will-quit', function () {
   // console.log('will quit')
-  // if (mainWindow) {
-    // mainWindow = null
-    // app.quit()
-  // }
-// })
+  if (mainWindow) {
+    mainWindow = null
+    app.quit()
+  }
+})
 
-// app.on('activate', function () {
+app.on('activate', function () {
   // console.log('activate')
-// })
+})
 
-// app.on('quit', function () {
+app.on('quit', function () {
   // console.log('quit')
-// })
+})
 
 // ------------------------------------------------------------------------
 // ------------------------------------------------------------------------
@@ -103,7 +98,7 @@ ipcMain.on('playbackChanged', function (event, payload) {
   console.log(payload)
 })
 
-// ipcMain.on('playbackTimeUpdate', function (event, payload) {
-//   console.log('playbackTimeUpdate')
-//   console.log(payload)
-// })
+ipcMain.on('playbackTimeUpdate', function (event, payload) {
+  console.log('playbackTimeUpdate')
+  console.log(payload)
+})

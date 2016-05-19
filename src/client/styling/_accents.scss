@@ -1,0 +1,309 @@
+// Uploading Music
+.material-transfer-radial-upload-overlay,
+.material-transfer-radial-download-overlay,
+.material-transfer-radial-processing-overlay {
+	background: $color_accent;
+}
+
+// Menu Selected
+.goog-menu .goog-menuitem.selected .goog-menuitem-content {
+	color: $color_accent;
+
+	&:hover {
+		color: $color_accent !important;
+	}
+}
+
+// Chevron Icons
+.cluster.material-cluster .lane-button core-icon,
+.cluster.material-cluster .lane-button iron-icon {
+	color: $color_accent;
+}
+
+// Toggle Button
+paper-toggle-button::shadow [checked] {
+	.toggle {
+		background: $color_accent;
+	}
+
+	.toggle-ink {
+		color: $color_accent;
+	}
+}
+
+paper-toggle-button[checked]:not([disabled]) {
+	.toggle-bar.paper-toggle-button,
+	.toggle-button.paper-toggle-button {
+		background-color: $color_accent;
+	}
+
+	.toggle-ink.paper-toggle-button {
+		color: $color_accent;
+	}
+}
+
+// Checkbox
+paper-checkbox::shadow {
+	#checkbox.checked {
+		background-color: $color_accent;
+		border-color: $color_accent;
+	}
+
+	#ink[checked] {
+		color: $color_accent;
+	}
+}
+
+paper-checkbox {
+	#ink[checked],
+	#ink[checked].paper-checkbox {
+		color: $color_accent;
+	}
+
+	#checkbox.checked,
+	#checkbox.checked.paper-checkbox {
+		background-color: $color_accent;
+		border-color: $color_accent;
+	}
+}
+
+// Buttons
+.button.primary,
+paper-button.material-primary,
+sj-paper-button.material-primary,
+paper-button.material-primary:not([raised])[focused],
+.simple-dialog-buttons button.goog-buttonset-default, {
+	background: $color_accent;
+	color: #fff;
+
+	&:hover {
+		background: $color_accent !important;
+	}
+}
+
+paper-action-dialog sj-paper-button,
+paper-dialog .buttons paper-button {
+	color: $color_accent;
+}
+
+#music-content .material-banner.banner.ws-search-banner sj-paper-button,
+#music-content .material-banner.banner.new-user-quiz-card sj-paper-button,
+#music-content .material-banner.banner.ws-subscriber-card sj-paper-button {
+	color: $color_accent;
+}
+
+.more-songs-container {
+	color: $color_accent;
+}
+
+paper-toast [data-action="button"],
+paper-toast div[data-action="button"] {
+	color: $color_accent;
+}
+
+// Playlist button
+#unsubscribe-playlist-button,
+sj-paper-button#unsubscribe-playlist-button {
+	.playlist-subscribed,
+	.icon[icon="add-circle"] {
+		color: $color_accent;
+	}
+}
+
+// Links
+a,
+.simple-dialog a,
+.nav-item-container,
+.music-source-empty-message {
+	&.primary {
+		color: $color_accent;
+	}
+}
+
+// Top Toolbar
+#material-app-bar {
+	background-color: $color_accent;
+}
+
+#nav-container #music-content.material .material-cover {
+	background-color: $color_accent;
+}
+
+// Logo
+.nav-toolbar .menu-logo {
+	g:nth-of-type(2) {
+		fill: $color_accent;
+	}
+}
+
+// Inputs
+paper-input-container,
+paper-input-decorator {
+	&::shadow .focused-underline {
+		background: $color_accent;
+	}
+
+	&[focused]::shadow .floated-label .label-text {
+		color: $color_accent;
+	}
+
+	.focused-line.paper-input-container {
+		background: $color_accent;
+	}
+
+	.add-on-content.is-highlighted.paper-input-container *,
+	.input-content.label-is-highlighted.paper-input-container label,
+	.input-content.label-is-highlighted.paper-input-container .paper-input-label {
+		color: $color_accent;
+	}
+}
+
+// Popup Dialog
+paper-action-dialog {
+	paper-input-decorator {
+		&::shadow .focused-underline {
+			background: $color_accent;
+		}
+
+		&[focused]::shadow .floated-label .label-text {
+			color: $color_accent;
+		}
+	}
+
+	sj-paper-button {
+		color: $color_accent;
+	}
+}
+
+// Dragging Songs Icon
+.material-drag .song-drag-label {
+    background: $color_accent;
+}
+
+// Slider
+paper-slider {
+	paper-ripple.paper-slider {
+		color: $color_accent;
+	}
+}
+
+paper-slider #sliderKnobInner.paper-slider,
+paper-progress #primaryProgress.paper-progress {
+	background-color: $color_accent;
+}
+
+// Loading Progress
+#current-loading-progress {
+	background: $color_accent;
+}
+
+// Loading Overlay
+#loading-overlay.material paper-spinner .circle {
+	border-color: $color_accent;
+}
+
+paper-spinner .spinner-layer {
+	border-color: $color_accent !important;
+}
+
+.upload-dialog {
+	.upload-dialog-title {
+		background: $color_accent;
+	}
+}
+
+.upload-dialog-dragover {
+	border-color: $color_accent;
+
+	.upload-dialog-description {
+		color: $color_accent !important;
+	}
+}
+
+
+// Explicit
+.explicit,
+.material-card .explicit,
+.material .song-row .explicit,
+.album-view .material-container-details .info .title .explicit {
+	background: $color_accent;
+}
+
+// Sidebar Navigation
+.nav-item-container,
+#nav_collections .nav-item-container, {
+	&.selected {
+		font-weight: 700;
+		color: $color_accent;
+		border-left: 2px solid $color_accent;
+
+		core-icon,
+		iron-icon {
+			color: $color_accent;
+		}
+	}
+}
+
+.solid-hero core-image#material-hero-image,
+.solid-hero iron-image#material-hero-image {
+	background-color: $color_accent !important;
+}
+
+.material-detail-view .material-container-details .read-more-button {
+	color: $color_accent;
+}
+
+// Page Play Button (Top Right)
+paper-fab,
+.material-container-details paper-fab,
+.material-container-details sj-fab {
+	background: $color_accent;
+}
+
+// Progress/Volume
+#sliderBar::shadow #activeProgress,
+paper-slider::shadow #sliderKnobInner,
+paper-slider::shadow #sliderBar::shadow #activeProgress {
+	background: $color_accent;
+}
+
+// Various Music Buttons
+#player.material .material-player-middle paper-icon-button[data-id="repeat"].active iron-icon,
+#player.material .material-player-middle paper-icon-button[data-id="shuffle"].active iron-icon,
+#player.material #material-player-right-wrapper paper-icon-button[data-id="queue"].opened iron-icon {
+	color: $color_accent !important;
+}
+
+#player.material sj-icon-button[data-id="cast"]::shadow core-icon[aria-label="cast-connected"],
+#player.material sj-icon-button[data-id="cast"]::shadow iron-icon[aria-label="cast-connected"] {
+	color: $color_accent !important;
+}
+
+#player.material .material-player-middle sj-icon-button[data-id="play-pause"]:not([disabled]),
+#player.material .material-player-middle paper-icon-button[data-id="play-pause"]:not([disabled]) iron-icon {
+	color: $color_accent;
+}
+
+// Top Charts Colors
+.top-charts-view .song-row [data-col="index"] .content,
+.top-charts-view .song-row [data-col="index"] .column-content,
+.material-card .details .left-items .index {
+	color: $color_accent;
+}
+
+// Subscribe Icon
+core-icon[icon="sj:subscribed"] svg,
+iron-icon[icon="sj:subscribed"] svg {
+	path:nth-child(2) {
+		fill: $color_accent;
+	}
+
+	path:nth-child(3) {
+		stroke: $color_accent;
+	}
+}
+
+// Queue Reorder Target Line
+.dragging-target-line {
+	border-top-color: $color_accent;
+}
