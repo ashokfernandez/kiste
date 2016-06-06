@@ -1,14 +1,14 @@
-import { app, BrowserWindow } from 'electron'
-import loadFileAsString from '../utils/loadFileAsString'
-import googleMusicWindowCreated from '../actions/googleMusicWindowCreated'
+// import { app, BrowserWindow } from 'electron'
+import menubar from 'menubar'
+import miniPlayerWindowCreated from '../actions/miniPlayerWindowCreated'
 import Promise from 'bluebird'
 
 var WINDOW_INSTANCE
 
-function createGoogleMusicWindow (showDevTools) {
+function createMiniPlayerWindow (showDevTools) {
   var googleMusicWindow = new BrowserWindow({
     width: 1400,
-    height: 950
+    height: 950,
     // titleBarStyle: 'hidden'
   })
 
@@ -40,16 +40,7 @@ function createGoogleMusicWindow (showDevTools) {
 
   // Inject in our js API for the controls
   googleMusicWindow.webContents.on('dom-ready', () => {
-    // client('modifyStyling.js')
-      // .then((modifyStyling) => {
-        // googleMusicWindow.webContents.executeJavaScript(modifyStyling)
-    // client('styling/main.css')
-      // .then((customStyles) => {
-        // googleMusicWindow.webContents.insertCSS(customStyles)
-    loadFileAsString('../interfaces/googleMusicToElectronInterface.js')
-      .then((appInterface) => {
-        googleMusicWindow.webContents.executeJavaScript(appInterface)
-      })
+    console.log('dom-ready')
   })
 
   if (showDevTools) {
@@ -59,13 +50,12 @@ function createGoogleMusicWindow (showDevTools) {
   return googleMusicWindow
 }
 
-function googleMusicWindowFactory (showDevTools) {
+function miniPlayerWindowFactory (showDevTools) {
   if (!WINDOW_INSTANCE) {
-    WINDOW_INSTANCE = createGoogleMusicWindow(showDevTools)
-    googleMusicWindowCreated(WINDOW_INSTANCE)
+    WINDOW_INSTANCE = createMiniPlayerWindow(showDevTools)
   }
 
-  return Promise.resolve(WINDOW_INSTANCE)
+  return WINDOW_INSTANCE
 }
 
-export default googleMusicWindowFactory
+export default miniPlayerWindowFactory

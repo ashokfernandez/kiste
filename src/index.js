@@ -1,8 +1,8 @@
 const GOOGLE_MUSIC_URL = 'https://music.google.com/'
-import { app, globalShortcut } from 'electron' // Module to control application life.
+import { app } from 'electron' // Module to control application life.
 import initIpcEventHandlers from './interfaces/initIpcEventHandlers'
+import initGlobalShortcuts from './shortcuts/initGlobalShortcuts'
 import createGoogleMusicWindow from './windowFactories/createGoogleMusicWindow'
-import playbackControls from './actions/playbackControls'
 import getGoogleMusicWindow from './utils/getGoogleMusicWindow'
 import createMainMenu from './menu'
 
@@ -25,15 +25,13 @@ app.on('window-all-closed', function () {
 // initialization and is ready to create browser windows.
 app.on('ready', function () {
   createGoogleMusicWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
-  getGoogleMusicWindow().loadURL(GOOGLE_MUSIC_URL)
+    .then(() => {
+      getGoogleMusicWindow().loadURL(GOOGLE_MUSIC_URL)
+      createMainMenu(app, getGoogleMusicWindow())
+    })
 
-  globalShortcut.register('MediaNextTrack', playbackControls.clickNextSong)
-  globalShortcut.register('MediaPreviousTrack', playbackControls.clickPreviousSong)
-  globalShortcut.register('MediaStop', playbackControls.clickPlayPause)
-  globalShortcut.register('MediaPlayPause', playbackControls.clickPlayPause)
-
-  createMainMenu(app, getGoogleMusicWindow())
   initIpcEventHandlers()
+  initGlobalShortcuts()
 })
 
 // app.on('will-quit', function () {

@@ -240,7 +240,7 @@ class GoogleMusicAPI {
 class Application {
   constructor () {
     this.song = {
-      title: '',
+      song: '',
       artist: '',
       album: '',
       albumArtUrl: '',
@@ -269,7 +269,7 @@ class Application {
 
   // Added custom checker for song change as _.isEquals was giving inconsistent results
   songChanged (newSong) {
-    if (newSong.title !== this.song.title || newSong.artist !== this.song.artist ||
+    if (newSong.song !== this.song.song || newSong.artist !== this.song.artist ||
         newSong.album !== this.song.album) {
       this.song = newSong
       this.notify('SONG_UPDATED', newSong)

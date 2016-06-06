@@ -12,12 +12,10 @@ class TempImage {
   }
 
   download () {
-    console.log('start download')
     return new Promise((resolve, reject) => {
       request
         .get(this.imageUrl)
         .on('end', (response) => {
-          console.log('download done')
           this.tmpImageStream.end()
           resolve(this.tmpImageStream.path)
         })

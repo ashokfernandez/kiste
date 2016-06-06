@@ -36,6 +36,7 @@
     "electron-shortcut-loader": "^0.4.0",
     "jquery": "^2.2.4",
     "lodash": "^4.13.1",
+    "menubar": "^4.1.1",
     "node-notifier": "^4.6.0",
     "redux": "^3.5.2",
     "request": "^2.72.0",
