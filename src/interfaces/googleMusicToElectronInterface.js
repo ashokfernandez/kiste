@@ -9,9 +9,9 @@
 const { remote, ipcRenderer } = require('electron')
 const _ = remote.require('lodash')
 
-const STOPPED = 0
-const PAUSED = 1
-const PLAYING = 2
+const STOPPED = 'STOPPED'
+const PAUSED = 'PAUSED'
+const PLAYING = 'PLAYING'
 
 // Repeat modes.
 const LIST_REPEAT = 'LIST_REPEAT'
@@ -88,9 +88,6 @@ class GoogleMusicAPI {
 
   // Playback functions.
   playPause () {
-
-    console.log('Client play pause')
-    console.log(this.element.getPlayPause())
     this.element.getPlayPause().click()
   }
 
@@ -134,7 +131,6 @@ class GoogleMusicAPI {
     }
   }
 }
-
 
 //     /* Create a rating API. */
 //     MusicAPI.Rating = (function() {
@@ -241,7 +237,7 @@ class GoogleMusicAPI {
  * @event  playbackTimeUpdate
  * @params currentTime, totalTime
  */
-class ApplicationState {
+class Application {
   constructor () {
     this.song = {
       title: '',
@@ -251,9 +247,9 @@ class ApplicationState {
       duration: 0
     }
 
-    this.shuffle = null
-    this.repeat = null
-    this.playbackMode = null
+    this.shuffle = NO_SHUFFLE
+    this.repeat = NO_REPEAT
+    this.playbackMode = STOPPED
     this.playBackTime = {
       currentTime: null,
       totalTime: null
@@ -266,15 +262,8 @@ class ApplicationState {
 
   _handleStateUpdate (parameterName, newValue, channel) {
     if (!_.isEqual(this[parameterName], newValue)) {
-      console.log('updating ' + parameterName)
-
-      console.log(this[parameterName])
-      console.log(newValue)
-
       this[parameterName] = newValue
       this.notify(channel, newValue)
-    } else {
-      console.log(parameterName + 'update blocked')
     }
   }
 
@@ -283,28 +272,26 @@ class ApplicationState {
     if (newSong.title !== this.song.title || newSong.artist !== this.song.artist ||
         newSong.album !== this.song.album) {
       this.song = newSong
-      this.notify('songChanged', newSong)
+      this.notify('SONG_UPDATED', newSong)
     }
   }
 
   shuffleChanged (newShuffle) {
-    this._handleStateUpdate('shuffle', newShuffle, 'shuffleChanged')
+    this._handleStateUpdate('shuffle', newShuffle, 'SHUFFLE_MODE_UPDATED')
   }
 
   repeatChanged (newRepeat) {
-    this._handleStateUpdate('repeat', newRepeat, 'repeatChanged')
+    this._handleStateUpdate('repeat', newRepeat, 'REPEAT_MODE_UPDATED')
   }
 
   playbackChanged (newPlaybackMode) {
-    this._handleStateUpdate('playbackMode', newPlaybackMode, 'playbackChanged')
+    this._handleStateUpdate('playbackMode', newPlaybackMode, 'PLAYBACK_STATE_CHANGED')
   }
 
   playbackTimeUpdate (newPlaybackTime) {
-    // this._handleStateUpdate('playbackMode', newPlaybackTime, 'playbackTimeUpdate')
+    this._handleStateUpdate('playbackMode', newPlaybackTime, 'PLAYBACK_TIME_UPDATED')
   }
 }
-
-const applicationState = new ApplicationState()
 
 /*
  * Wraps MutationObserver to construct a mutation observer for DOM changes
@@ -322,10 +309,10 @@ class EventObserver {
 /*
  * Loads all of the relavant EventObservers and updates the application state when any of them change
  */
-class EventNotification {
+class PageObserver {
   constructor () {
     this.song = {
-      title: '',
+      song: '',
       artist: '',
       album: '',
       albumArtUrl: '',
@@ -371,13 +358,13 @@ class EventNotification {
         var name = target.id || target.className
 
         if (name === 'now-playing-info-wrapper') {
-          var title = document.querySelector('#player #currently-playing-title')
+          var song = document.querySelector('#player #currently-playing-title')
           var artist = document.querySelector('#player #player-artist')
           var album = document.querySelector('#player .player-album')
           var albumArtUrl = document.querySelector('#player #playerBarArt')
           var duration = parseInt(document.querySelector('#player #material-player-progress').max, 10) / 1000
 
-          title = (title) ? title.innerText : 'Unknown'
+          song = (song) ? song.innerText : 'Unknown'
           artist = (artist) ? artist.innerText : 'Unknown'
           album = (album) ? album.innerText : 'Unknown'
           albumArtUrl = (albumArtUrl) ? albumArtUrl.src : null
@@ -389,7 +376,7 @@ class EventNotification {
 
           // Make sure that this is the first of the notifications for the
           // insertion of the song information elements.
-          applicationState.songChanged({title, artist, album, albumArtUrl, duration})
+          window.application.songChanged({song, artist, album, albumArtUrl, duration})
 
           // Fire the rating observer if the thumbs exist (no harm if already observing)
           // Ensure this is below notifySong, otherwise it'll apply the loved status of the current song to the previous song (#390)
@@ -403,10 +390,10 @@ class EventNotification {
     mutations.forEach((mutation) => {
       var target = mutation.target
       var id = target.dataset.id
-      var value = target.getAttribute('value')
 
       if (id === 'shuffle') {
-        applicationState.shuffleChanged(value)
+        var shuffleMode = target.classList.contains('active') ? ALL_SHUFFLE : NO_SHUFFLE
+        window.application.shuffleChanged(shuffleMode)
       }
     })
   }
@@ -415,10 +402,16 @@ class EventNotification {
     mutations.forEach((mutation) => {
       var target = mutation.target
       var id = target.dataset.id
-      var value = target.getAttribute('value')
 
       if (id === 'repeat') {
-        applicationState.repeatChanged(value)
+        var title = target.getAttribute('title').toLowerCase()
+        var repeatMode = null
+
+        if (title.includes('off')) repeatMode = NO_REPEAT
+        else if (title.includes('all')) repeatMode = LIST_REPEAT
+        else if (title.includes('current')) repeatMode = SINGLE_REPEAT
+
+        window.application.repeatChanged(repeatMode)
       }
     })
   }
@@ -443,7 +436,7 @@ class EventNotification {
           }
         }
 
-        applicationState.playbackChanged(mode)
+        window.application.playbackChanged(mode)
       }
     })
   }
@@ -456,7 +449,7 @@ class EventNotification {
       if (id === 'material-player-progress') {
         var currentTime = parseInt(target.value, 10)
         var totalTime = parseInt(target.max, 10)
-        applicationState.playbackTimeUpdate({currentTime, totalTime})
+        window.application.playbackTimeUpdate({currentTime, totalTime})
       }
     })
   }
@@ -479,7 +472,8 @@ class EventReceiver {
 }
 
 window.onload = function () {
+  window.application = new Application()
   window.GoogleMusic = new GoogleMusicAPI()
   window.EventReceiverHandler = new EventReceiver()
-  window.EventNotificationBus = new EventNotification()
+  window.EventNotificationBus = new PageObserver(window.application)
 }

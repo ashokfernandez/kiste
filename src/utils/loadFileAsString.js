@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Promise from 'bluebird'
 import path from 'path'
 import fs from 'fs'
@@ -22,4 +21,4 @@ function loadFileAsString (fileName) {
   }
 }
 
-module.exports = loadFileAsString
+export default loadFileAsString
