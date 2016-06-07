@@ -13,15 +13,6 @@ import path from 'path'
 const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = false
 const PATH_TO_MINIPLAYER_CONTENTS = path.join(__dirname, 'miniplayer', 'dist/')
 
-// Quit when all windows are closed
-app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
 createMiniPlayerWindow(PATH_TO_MINIPLAYER_CONTENTS)
   // .then(() => console.log('miniplayer created'))
 
@@ -30,6 +21,15 @@ createGoogleMusicWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
     getGoogleMusicWindow().loadURL(GOOGLE_MUSIC_URL)
     createMainMenu(app, getGoogleMusicWindow())
   })
+
+// Quit when all windows are closed
+app.on('window-all-closed', function () {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
 
 app.on('ready', function () {
   initIpcEventHandlers()

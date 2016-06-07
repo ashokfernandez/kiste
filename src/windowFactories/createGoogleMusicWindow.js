@@ -8,8 +8,8 @@ var WINDOW_INSTANCE
 function _createGoogleMusicWindow (showDevTools) {
   var googleMusicWindow = new BrowserWindow({
     width: 1400,
-    height: 950
-    // titleBarStyle: 'hidden'
+    height: 950,
+    titleBarStyle: 'hidden'
   })
 
   // Emitted when the x is pressed on the main window
@@ -40,10 +40,11 @@ function _createGoogleMusicWindow (showDevTools) {
 
   // Inject in our js API for the controls
   googleMusicWindow.webContents.on('dom-ready', () => {
+    loadFileAsString('../client/styling/main.css')
+      .then((customStyles) => googleMusicWindow.webContents.insertCSS(customStyles))
+
     loadFileAsString('../interfaces/googleMusicToElectronInterface.js')
-      .then((appInterface) => {
-        googleMusicWindow.webContents.executeJavaScript(appInterface)
-      })
+      .then((appInterface) => googleMusicWindow.webContents.executeJavaScript(appInterface))
   })
 
   if (showDevTools) {

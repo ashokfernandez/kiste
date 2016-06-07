@@ -33,18 +33,27 @@
 //     @import 'forms';
 // }
 
-$spacer-height: 10px;
 
-// Spacer at the top of the page
-#main-spacer {
-  height: $spacer-height;
-  width: 100%;
-  background-color: #ef6c00;
+
+#material-app-bar {
+  -webkit-app-region: drag
 }
 
-#drawer-spacer {
-  height: $spacer-height;
-  width: 100%;
-}
 
-@import 'dark'
+// $spacer-height: 10px;
+
+// // Spacer at the top of the page
+// #main-spacer {
+//   height: $spacer-height;
+//   width: 100%;
+//   background-color: #ef6c00;
+// }
+
+// #drawer-spacer {
+//   height: $spacer-height;
+//   width: 100%;
+// }
+
+
+
+// // @import 'dark'
