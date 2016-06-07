@@ -1,5 +1,4 @@
 // Doesnt work, rewrites of the DOM fuck it up
-
 // var remote = require('remote')
 
 // function prependSpacerDivToMainPlayer () {

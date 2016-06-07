@@ -7,7 +7,7 @@ var WINDOW_INSTANCE
 
 function createMiniPlayerWindow (pathToContents) {
   return new Promise((resolve, reject) => {
-    var miniPlayer = menubar({ dir: pathToContents, 'preload-window': true })
+    var miniPlayer = menubar({ dir: pathToContents, 'preload-window': true, 'show-dock-icon': true })
 
     miniPlayer.on('ready', () => {
       WINDOW_INSTANCE = miniPlayer.window

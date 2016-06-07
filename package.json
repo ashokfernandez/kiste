@@ -7,8 +7,8 @@
     "test": "./node_modules/.bin/mocha ./specs/ --recursive",
     "start": "gulp && ./node_modules/.bin/electron .",
     "build": "npm run build:osx && npm run build:win",
-    "build:osx": "npm test && gulp && electron-packager . \"Kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=1.2.1 --icon=assets/osx/icon.icns --ignore=\"src|dist|build|specs|assets|circle\"",
-    "build:win": "npm test && gulp && electron-packager . \"Kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=1.2.1 --icon=assets/win/icon.ico --ignore=\"src|dist|build|specs|assets|circle\"",
+    "build:osx": "npm test && gulp && ./node_modules/.bin/electron-packager . \"Kiste\" --out=build/osx/ --platform=darwin --arch=x64 --version=1.2.1 --icon=assets/osx/icon.icns --ignore=\"src|dist|build|specs|assets|circle\"",
+    "build:win": "npm test && gulp && ./node_modules/.bin/electron-packager . \"Kiste\" --out=build/win/ --platform=win32 --arch=ia32 --version=1.2.1 --icon=assets/win/icon.ico --ignore=\"src|dist|build|specs|assets|circle\"",
     "pack": "npm run pack:osx && npm run pack:win",
     "pack:osx": "npm run build:osx && ./node_modules/.bin/build \"build/osx/kiste-darwin-x64/Kiste.app\" --platform=osx --out=\"dist/osx\" --config=packager.json",
     "pack:win": "npm run build:win && ./node_modules/.bin/build \"build/win/kiste-win32-ia32\" --platform=win --out=\"dist/win\" --config=packager.json"

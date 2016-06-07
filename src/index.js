@@ -11,16 +11,15 @@ import path from 'path'
 // import * as desktopNotifications from './desktopNotifications'
 
 const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = false
-const PATH_TO_MINIPLAYER_CONTENTS = path.join(__dirname, 'miniplayer', 'dist/')
-
-createMiniPlayerWindow(PATH_TO_MINIPLAYER_CONTENTS)
-  // .then(() => console.log('miniplayer created'))
+const PATH_TO_MINIPLAYER_CONTENTS = path.join(__dirname, 'miniplayer', 'bundled/')
 
 createGoogleMusicWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
   .then(() => {
     getGoogleMusicWindow().loadURL(GOOGLE_MUSIC_URL)
     createMainMenu(app, getGoogleMusicWindow())
   })
+
+createMiniPlayerWindow(PATH_TO_MINIPLAYER_CONTENTS)
 
 // Quit when all windows are closed
 app.on('window-all-closed', function () {
