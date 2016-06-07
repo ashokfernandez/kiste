@@ -15,3 +15,6 @@ You need the pre requisites listed [here](https://github.com/loopline-systems/el
 
 # Disclaimer
 This project has nothing to do with Google and is an unoffcial fun side project for me. No gurantees and no intented copyright infringement.
+
+# Attributions
+Icons credit to [Madebyoliver](http://www.flaticon.com/authors/madebyoliver) from [www.flaticon.com](http://www.flaticon.com) licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)

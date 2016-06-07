@@ -28,6 +28,12 @@ gulp.task('copyAssets', () => {
     .pipe(gulp.dest('./lib/assets/'))
 })
 
+gulp.task('copyMiniplayerAssets', () => {
+  // App icon
+  return gulp.src('./assets/miniplayer/**')
+    .pipe(gulp.dest('./lib/miniplayer/bundled/'))
+})
+
 gulp.task('copyMiniplayer', () => {
   // App icon
   return gulp.src('./src/miniplayer/**')
@@ -37,7 +43,7 @@ gulp.task('copyMiniplayer', () => {
 // --------------------------------------------------------
 
 gulp.task('default', function (callback) {
-  runSequence('clean', ['sass', 'babel', 'copyAssets', 'copyMiniplayer'], callback)
+  runSequence('clean', ['sass', 'babel', 'copyAssets', 'copyMiniplayer', 'copyMiniplayerAssets'], callback)
 })
 
 gulp.task('build', ['default'])
