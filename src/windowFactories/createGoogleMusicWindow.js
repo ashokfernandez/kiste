@@ -5,7 +5,7 @@ import Promise from 'bluebird'
 
 var WINDOW_INSTANCE
 
-function createGoogleMusicWindow (showDevTools) {
+function _createGoogleMusicWindow (showDevTools) {
   var googleMusicWindow = new BrowserWindow({
     width: 1400,
     height: 950
@@ -40,12 +40,6 @@ function createGoogleMusicWindow (showDevTools) {
 
   // Inject in our js API for the controls
   googleMusicWindow.webContents.on('dom-ready', () => {
-    // client('modifyStyling.js')
-      // .then((modifyStyling) => {
-        // googleMusicWindow.webContents.executeJavaScript(modifyStyling)
-    // client('styling/main.css')
-      // .then((customStyles) => {
-        // googleMusicWindow.webContents.insertCSS(customStyles)
     loadFileAsString('../interfaces/googleMusicToElectronInterface.js')
       .then((appInterface) => {
         googleMusicWindow.webContents.executeJavaScript(appInterface)
@@ -59,10 +53,22 @@ function createGoogleMusicWindow (showDevTools) {
   return googleMusicWindow
 }
 
+const createGoogleMusicWindow = (showDevTools) => {
+  return new Promise((resolve, reject) => {
+    app.on('ready', () => {
+      WINDOW_INSTANCE = _createGoogleMusicWindow(showDevTools)
+      resolve()
+    })
+  })
+}
+
 function googleMusicWindowFactory (showDevTools) {
   if (!WINDOW_INSTANCE) {
-    WINDOW_INSTANCE = createGoogleMusicWindow(showDevTools)
-    googleMusicWindowCreated(WINDOW_INSTANCE)
+    return createGoogleMusicWindow(showDevTools)
+      .then(() => {
+        googleMusicWindowCreated(WINDOW_INSTANCE)
+        return Promise.resolve(WINDOW_INSTANCE)
+      })
   }
 
   return Promise.resolve(WINDOW_INSTANCE)

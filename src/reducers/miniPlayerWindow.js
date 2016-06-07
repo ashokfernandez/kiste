@@ -6,7 +6,6 @@ function miniPlayerWindow (state = INITIAL_STATE, action) {
   switch (action.type) {
     case MINIPLAYER_WINDOW_CREATED:
       return action.payload
-
     default:
       return state
   }

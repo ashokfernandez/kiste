@@ -2,15 +2,16 @@ const GOOGLE_MUSIC_URL = 'https://music.google.com/'
 import { app } from 'electron' // Module to control application life.
 import initIpcEventHandlers from './interfaces/initIpcEventHandlers'
 import initGlobalShortcuts from './shortcuts/initGlobalShortcuts'
-import createGoogleMusicWindow from './windowFactories/createGoogleMusicWindow'
+import { createGoogleMusicWindow, createMiniPlayerWindow } from './windowFactories'
 import getGoogleMusicWindow from './utils/getGoogleMusicWindow'
 import createMainMenu from './menu'
-
+import path from 'path'
 // BACK AND FORWARD BROWSER SHORTCUTS ARE BROKEN
 // import connectKeyboardShortcuts from './shortcuts'
 // import * as desktopNotifications from './desktopNotifications'
 
-const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = true
+const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = false
+const PATH_TO_MINIPLAYER_CONTENTS = path.join(__dirname, 'miniplayer', 'dist/')
 
 // Quit when all windows are closed
 app.on('window-all-closed', function () {
@@ -21,15 +22,16 @@ app.on('window-all-closed', function () {
   }
 })
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-app.on('ready', function () {
-  createGoogleMusicWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
-    .then(() => {
-      getGoogleMusicWindow().loadURL(GOOGLE_MUSIC_URL)
-      createMainMenu(app, getGoogleMusicWindow())
-    })
+createMiniPlayerWindow(PATH_TO_MINIPLAYER_CONTENTS)
+  // .then(() => console.log('miniplayer created'))
 
+createGoogleMusicWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
+  .then(() => {
+    getGoogleMusicWindow().loadURL(GOOGLE_MUSIC_URL)
+    createMainMenu(app, getGoogleMusicWindow())
+  })
+
+app.on('ready', function () {
   initIpcEventHandlers()
   initGlobalShortcuts()
 })

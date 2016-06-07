@@ -28,10 +28,16 @@ gulp.task('copyAssets', () => {
     .pipe(gulp.dest('./lib/assets/'))
 })
 
+gulp.task('copyMiniplayer', () => {
+  // App icon
+  return gulp.src('./src/miniplayer/**')
+    .pipe(gulp.dest('./lib/miniplayer/'))
+})
+
 // --------------------------------------------------------
 
 gulp.task('default', function (callback) {
-  runSequence('clean', ['sass', 'babel', 'copyAssets'], callback)
+  runSequence('clean', ['sass', 'babel', 'copyAssets', 'copyMiniplayer'], callback)
 })
 
 gulp.task('build', ['default'])
