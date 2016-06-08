@@ -254,6 +254,7 @@ class Application {
       currentTime: null,
       totalTime: null
     }
+    this.playbackQueue = []
   }
 
   notify (channel, payload) {
@@ -290,6 +291,17 @@ class Application {
 
   playbackTimeUpdate (newPlaybackTime) {
     this._handleStateUpdate('playbackMode', newPlaybackTime, 'PLAYBACK_TIME_UPDATED')
+  }
+
+  // Do the change checking here instead of in _handleStateUpdate since newPLaybackQueue
+  // is an array of objects which is a little harder to compare
+  // JSON string check from here
+  // http://stackoverflow.com/questions/13142968/deep-comparison-of-objects-arrays
+  playbackQueueChanged (newPlaybackQueue) {
+    if (JSON.stringify(this.playbackQueue) !== JSON.stringify(newPlaybackQueue)) {
+      this.playbackQueue = newPlaybackQueue
+      this.notify('PLAYBACK_QUEUE_UPDATED', newPlaybackQueue)
+    }
   }
 }
 
@@ -348,6 +360,18 @@ class PageObserver {
       '#player #material-player-progress', {
         attributes: true
       })
+
+    // The playback queue isn't on the DOM until it's been opened so we have to open and close it
+    // before we can register the mutation observer
+    document.querySelector('#queue').click()
+    setTimeout(() => {
+      document.querySelector('#queue').click()
+      this.playbackQueueObserver = new EventObserver(this._playbackQueueObserverCallback,
+      '#queueContainer [data-id="queue"]', {
+        childList: true,
+        subtree: true
+      })
+    }, 50)
   }
 
   // ------------------------------------------------------------ MUTATION OBSERVER CALLBACKS
@@ -450,6 +474,45 @@ class PageObserver {
         var currentTime = parseInt(target.value, 10)
         var totalTime = parseInt(target.max, 10)
         window.application.playbackTimeUpdate({currentTime, totalTime})
+      }
+    })
+  }
+
+  _playbackQueueObserverCallback (mutations) {
+    mutations.forEach((mutation) => {
+      var target = mutation.target
+
+      // If the table changed, grab the whole thing and parse it to JSON
+      if (target.nodeName === 'TBODY') {
+        var playingFrom = document.querySelector('#mini-queue-details [data-id="playing-from-text"]').innerText
+        var playingFromArtworkUrl = document.querySelector('#mini-queue-details .images img').src
+
+        var songRows = Array.from(target.childNodes)
+        var songs = []
+
+        songRows.forEach((songRow) => {
+          if (songRow.classList.contains('song-row')) {
+            let song = {
+              'song': songRow.querySelector('.song-title').innerText,
+              'duration': songRow.querySelector('[data-col="duration"').innerText,
+              'artist': songRow.querySelector('[data-col="artist"').innerText,
+              'album': songRow.querySelector('[data-col="album"').innerText,
+              'playCount': songRow.querySelector('[data-col="play-count"').innerText,
+              'albumArtUrl': songRow.querySelector('img').src,
+              'currentlyPlaying': songRow.classList.contains('currently-playing')
+            }
+
+            songs.push(song)
+          }
+        })
+
+        window.application.playbackQueueChanged({
+          playingFrom: {
+            name: playingFrom,
+            artworkUrl: playingFromArtworkUrl
+          },
+          songs: songs
+        })
       }
     })
   }

@@ -1,9 +1,9 @@
-import { PLAY_QUEUE_UPDATED } from './types'
+import { PLAYBACK_QUEUE_UPDATED } from './types'
 import applicationStore from '../applicationStore'
 
 function playbackQueueUpdated (newPlaybackQueue) {
   return {
-    type: PLAY_QUEUE_UPDATED,
+    type: PLAYBACK_QUEUE_UPDATED,
     payload: newPlaybackQueue
   }
 }

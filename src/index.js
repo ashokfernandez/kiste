@@ -10,7 +10,7 @@ import path from 'path'
 // import connectKeyboardShortcuts from './shortcuts'
 // import * as desktopNotifications from './desktopNotifications'
 
-const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = false
+const SHOW_DEVELOPER_TOOLS_ON_LAUNCH = true
 const PATH_TO_MINIPLAYER_CONTENTS = path.join(__dirname, 'miniplayer', 'bundled/')
 
 createGoogleMusicWindow(SHOW_DEVELOPER_TOOLS_ON_LAUNCH)
